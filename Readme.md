@@ -1,7 +1,7 @@
 # Личный проект «TaskForce»
 
 * Студент: [Mark Morgunov](https://up.htmlacademy.ru/yii/1/user/1415187).
-* Наставник: `Неизвестно`.
+* Наставник: [Олег Мифле](https://up.htmlacademy.ru/yii/1/user/496565).
 
 ---
 
