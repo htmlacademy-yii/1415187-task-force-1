@@ -176,7 +176,7 @@ class Task
      */
     public function getNextStatus(string $action, string $role): string
     {
-        if (!empty($role) && in_array($action, self::ACTIONS)) {
+        if (!empty($role) && array_key_exists($action, self::ACTIONS)) {
             foreach (self::CONVERSIONS as $item) {
                 if (($item['from'] === $this->status) && ($item['name'] === $action) && ($item['role'] === $role)) {
                     return $item['to'];
@@ -184,6 +184,6 @@ class Task
             }
         }
 
-        throw new Exception('Следующий статус не может быть определен');
+        return ('Следующий статус не может быть определен');
     }
 }
