@@ -9,11 +9,11 @@ assert_options(ASSERT_WARNING, 0);
 
 function my_assert_handler($file, $line, $code, $desc = null)
 {
-    echo "Assertion failed at $file:$line: $code";
+    echo 'Assertion failed at $file:$line: $code';
     if ($desc) {
-        echo ": $desc";
+        echo ': $desc';
     }
-    echo "\n";
+    echo '\n';
     echo '<br>';
 }
 
