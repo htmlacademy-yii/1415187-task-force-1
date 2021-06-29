@@ -81,14 +81,6 @@ class Task
     public DateTime $deadLine;
     public string $status;
 
-    /**
-     * Task constructor.
-     *
-     * @param int      $executorID
-     * @param int      $customerID
-     * @param DateTime $deadLine
-     * @param string   $status
-     */
     public function __construct(
         int $executorID,
         int $customerID,
@@ -184,6 +176,6 @@ class Task
             }
         }
 
-        return ('Следующий статус не может быть определен');
+        throw new Exception('Следующий статус не может быть определен');
     }
 }

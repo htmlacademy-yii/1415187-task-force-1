@@ -14,6 +14,7 @@ function my_assert_handler($file, $line, $code, $desc = null)
         echo ": $desc";
     }
     echo "\n";
+    echo '<br>';
 }
 
 assert_options(ASSERT_CALLBACK, 'my_assert_handler');
