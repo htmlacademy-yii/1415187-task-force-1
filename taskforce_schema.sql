@@ -1,190 +1,152 @@
-CREATE SCHEMA taskforce;
+DROP SCHEMA IF EXISTS taskforce;
+CREATE SCHEMA taskforce
+DEFAULT CHARACTER SET UTF8MB4
+DEFAULT COLLATE utf8mb4_general_ci;
+USE taskforce;
+SET default_storage_engine=InnoDB;
 
-CREATE TABLE taskforce.categories ( 
-	id                   int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
-	name                 varchar(64)  NOT NULL    ,
-	icon                 varchar(128)      
- ) engine=InnoDB;
+CREATE TABLE category
+(
+    id   int         NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name varchar(64) NOT NULL,
+    icon varchar(128)
+) COMMENT 'РЎРїРёСЃРѕРє РєР°С‚РµРіРѕСЂРёР№';
 
-ALTER TABLE taskforce.categories COMMENT 'Список категорий';
+CREATE TABLE city
+(
+    id     int           NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name   varchar(64)   NOT NULL,
+    lat    decimal(8, 6) NOT NULL,
+    `long` decimal(9, 6) NOT NULL
+) COMMENT 'РЎРїРёСЃРѕРє РіРѕСЂРѕРґРѕРІ';
 
-CREATE TABLE taskforce.cities ( 
-	id                   int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
-	name                 varchar(64)  NOT NULL    ,
-	coordinates          json  NOT NULL    
- ) engine=InnoDB;
+CREATE TABLE notification_type
+(
+    id   int          NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name varchar(128) NOT NULL
+);
 
-ALTER TABLE taskforce.cities COMMENT 'Список городов';
+CREATE TABLE status
+(
+    id   int         NOT NULL PRIMARY KEY,
+    name varchar(64) NOT NULL
+) COMMENT 'РЎС‚Р°С‚СѓСЃС‹ Р·Р°РґР°РЅРёР№';
 
-ALTER TABLE taskforce.cities MODIFY coordinates json  NOT NULL   COMMENT 'Две координаты, представляющие расположение города как одну ячейку информации.';
+CREATE TABLE `user`
+(
+    id            int          NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    email         varchar(128) NOT NULL,
+    name          varchar(128) NOT NULL,
+    password      char(64)     NOT NULL,
+    date_add      datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Р’СЂРµРјСЏ РїРѕСЃР»РµРґРЅРµР№ Р°РєС‚РёРІРЅРѕСЃС‚Рё РЅР° СЃР°Р№С‚Рµ',
+    date_activity datetime     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    is_visible    boolean      NOT NULL DEFAULT true COMMENT 'РџРѕРєР°Р·С‹РІР°РµС‚/СЃРєСЂС‹РІР°РµС‚ РїСЂРѕС„РёР»СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.\nР•СЃР»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ Р·Р°РєР°Р·С‡РёРє - СЃРєСЂС‹С‚СЊ РєРѕРЅС‚Р°РєС‚С‹ СЃРѕ СЃС‚СЂР°РЅРёС†С‹ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.\nР•СЃР»Рё РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РёСЃРїРѕР»РЅРёС‚РµР»СЊ - СЃРєСЂС‹С‚СЊ РїРѕРєР°Р· РєР°СЂС‚РѕС‡РєРё СЃРѕ СЃС‚СЂР°РЅРёС†С‹ РёСЃРїРѕР»РЅРёС‚РµР»РµР№.',
+    city_id       int COMMENT 'РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РіРѕСЂРѕРґР° РёР· С‚Р°Р±Р»РёС†С‹ РіРѕСЂРѕРґРѕРІ',
+    adress        varchar(255) COMMENT 'РђРґСЂРµСЃ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ',
+    birthday      date,
+    phone         varchar(11),
+    skype         varchar(64),
+    telegram      varchar(64),
+    avatar        varchar(128),
+    about         text,
+    is_deleted    boolean      NOT NULL DEFAULT false,
+    CONSTRAINT fk_users_cities FOREIGN KEY (city_id) REFERENCES city (id) ON DELETE SET NULL ON UPDATE NO ACTION
+);
 
-CREATE TABLE taskforce.notification_types ( 
-	id                   int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
-	name                 varchar(128)  NOT NULL    
- ) engine=InnoDB;
+CREATE TABLE user_notification
+(
+    user_id         int NOT NULL COMMENT 'РўР°Р±Р»РёС†Р° РЅР°СЃС‚СЂРѕРµРє СѓРІРµРґРѕРјР»РµРЅРёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ.\nР•СЃР»Рё Р·Р°РїРёСЃСЊ СЃСѓС‰РµСЃС‚РІСѓРµС‚ - СѓРІРµРґРѕРјР»РµРЅРёРµ Р°РєС‚РёРІРЅРѕ.',
+    notification_id int NOT NULL COMMENT 'РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С‚РёРїР° СѓРІРµРґРѕРјР»РµРЅРёСЏ',
+    CONSTRAINT fk_user_notification_users FOREIGN KEY (user_id) REFERENCES `user` (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT fk_user_notification FOREIGN KEY (notification_id) REFERENCES notification_type (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
 
-CREATE TABLE taskforce.statuses ( 
-	id                   int  NOT NULL    PRIMARY KEY,
-	name                 varchar(64)  NOT NULL    
- ) engine=InnoDB;
+CREATE TABLE favorite
+(
+    customer_id int NOT NULL,
+    executor_id int NOT NULL,
+    CONSTRAINT fk_favorites_customer FOREIGN KEY (customer_id) REFERENCES `user` (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT fk_favorites_executor FOREIGN KEY (executor_id) REFERENCES `user` (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+) COMMENT 'РР·Р±СЂР°РЅРЅС‹Рµ РёСЃРїРѕР»РЅРёС‚РµР»Рё';
 
-ALTER TABLE taskforce.statuses COMMENT 'Статусы заданий';
+CREATE TABLE portfolio
+(
+    id       int          NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id  int          NOT NULL,
+    filepath varchar(255) NOT NULL,
+    CONSTRAINT fk_images_of_work_users FOREIGN KEY (user_id) REFERENCES `user` (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+) COMMENT 'РџРѕСЂС‚С„РѕР»РёРѕ РёСЃРїРѕР»РЅРёС‚РµР»РµР№';
 
-CREATE TABLE taskforce.users ( 
-	id                   int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
-	email                varchar(128)  NOT NULL    ,
-	name                 varchar(128)  NOT NULL    ,
-	password             char(64)  NOT NULL    ,
-	date_add             datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP   ,
-	date_activity        datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP   ,
-	is_visible           float  NOT NULL DEFAULT true   ,
-	city_id              int      ,
-	adress               varchar(255)      ,
-	birthday             date      ,
-	phone                varchar(11)      ,
-	skype                varchar(64)      ,
-	telegram             varchar(64)      ,
-	avatar               varchar(128)      ,
-	about                text      ,
-	is_deleted           boolean  NOT NULL DEFAULT false   ,
-	CONSTRAINT fk_users_cities FOREIGN KEY ( city_id ) REFERENCES taskforce.cities( id ) ON DELETE SET NULL ON UPDATE NO ACTION
- ) engine=InnoDB;
+CREATE TABLE specialisation
+(
+    executor_id int NOT NULL,
+    category_id int NOT NULL,
+    CONSTRAINT fk_specialisations_users FOREIGN KEY (executor_id) REFERENCES `user` (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT fk_specialisations_categories FOREIGN KEY (category_id) REFERENCES category (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+) COMMENT 'РЎРїРµС†РёР°Р»РёР·Р°С†РёРё РёСЃРїРѕР»РЅРёС‚РµР»РµР№.\nР•СЃР»Рё СЃРїРµС†РёР°Р»РёР·Р°С†РёР№ Сѓ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РЅРµС‚ - РѕРЅ Р·Р°РєР°Р·С‡РёРє.';
 
-ALTER TABLE taskforce.users MODIFY date_activity datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP  COMMENT 'Время последней активности на сайте';
+CREATE TABLE task
+(
+    id          int           NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name        varchar(128)  NOT NULL COMMENT 'Р—Р°РіРѕР»РѕРІРѕРє Р·Р°РґР°РЅРёСЏ',
+    description text          NOT NULL COMMENT 'РўРµРєСЃС‚ Р·Р°РґР°РЅРёСЏ',
+    category_id int           NOT NULL COMMENT 'РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РєР°С‚РµРіРѕСЂРёРё РёР· С‚Р°Р±Р»РёС†С‹ С‚РёРїРѕРІ РєР°С‚РµРіРѕСЂРёР№',
+    status_id   int           NOT NULL COMMENT 'РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚Р°С‚СѓСЃР° РёР· С‚Р°Р±Р»РёС†С‹ СЃС‚Р°С‚СѓСЃРѕРІ Р·Р°РґР°РЅРёР№',
+    price       numeric(6, 2) NOT NULL COMMENT 'Р¦РµРЅР° Р·Р°РєР°Р·С‡РёРєР°',
+    customer_id int           NOT NULL COMMENT 'РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р·Р°РєР°Р·С‡РёРєР° РёР· С‚Р°Р±Р»РёС†С‹ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№',
+    date_add    datetime      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    executor_id int COMMENT 'РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РёСЃРїРѕР»РЅРёС‚РµР»СЏ РёР· С‚Р°Р±Р»РёС†С‹ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№',
+    adress      varchar(255),
+    city_id     int COMMENT 'РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РіРѕСЂРѕРґР° РёР· С‚Р°Р±Р»РёС†С‹ РіРѕСЂРѕРґРѕРІ',
+    expire      date COMMENT 'РЎСЂРѕРє РёСЃРїРѕР»РЅРµРЅРёСЏ Р·Р°РґР°РЅРёСЏ',
+    CONSTRAINT fk_tasks_categories FOREIGN KEY (category_id) REFERENCES category (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT fk_tasks_statuses FOREIGN KEY (status_id) REFERENCES status (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT fk_tasks_customer FOREIGN KEY (customer_id) REFERENCES `user` (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT fk_tasks_executor FOREIGN KEY (executor_id) REFERENCES `user` (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT fk_tasks_cities FOREIGN KEY (city_id) REFERENCES city (id) ON DELETE SET NULL ON UPDATE NO ACTION
+);
 
-ALTER TABLE taskforce.users MODIFY is_visible float  NOT NULL DEFAULT true  COMMENT 'Показывает/скрывает профиль пользователя.\nЕсли пользователь заказчик - скрыть контакты со страницы пользователя.\nЕсли пользователь исполнитель - скрыть показ карточки со страницы исполнителей.';
+CREATE TABLE task_file
+(
+    id       int          NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    task_id  int          NOT NULL,
+    filepath varchar(128) NOT NULL,
+    CONSTRAINT fk_task_files_tasks FOREIGN KEY (task_id) REFERENCES task (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+) COMMENT 'Р¤Р°Р№Р»С‹, РїСЂРёРєСЂРµРїР»РµРЅРЅС‹Рµ Рє Р·Р°РґР°РЅРёСЏРј';
 
-ALTER TABLE taskforce.users MODIFY city_id int     COMMENT 'Идентификатор города из таблицы городов';
+CREATE TABLE feedback
+(
+    id          int      NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    task_id     int      NOT NULL COMMENT 'РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р·Р°РґР°РЅРёСЏ',
+    executor_id int      NOT NULL,
+    rate        int      NOT NULL,
+    created_at  datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    description text,
+    CONSTRAINT fk_feedbacks_tasks FOREIGN KEY (task_id) REFERENCES task (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT fk_feedbacks_users FOREIGN KEY (executor_id) REFERENCES `user` (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+) COMMENT 'РћС‚Р·С‹РІС‹ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ РѕР± РёСЃРїРѕР»РЅРёС‚РµР»СЏС…';
 
-ALTER TABLE taskforce.users MODIFY adress varchar(255)     COMMENT 'Адрес пользователя';
+CREATE TABLE message
+(
+    id          int      NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    sender_id   int      NOT NULL,
+    receiver_id int      NOT NULL,
+    task_id     int      NOT NULL,
+    message     text     NOT NULL,
+    created_at  datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_messages_sender FOREIGN KEY (sender_id) REFERENCES `user` (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT fk_messages_receiver FOREIGN KEY (receiver_id) REFERENCES `user` (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT fk_messages_tasks FOREIGN KEY (task_id) REFERENCES task (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+);
 
-CREATE TABLE taskforce.favorites ( 
-	customer_id          int  NOT NULL    ,
-	executor_id          int  NOT NULL    ,
-	CONSTRAINT fk_favorites_customer FOREIGN KEY ( customer_id ) REFERENCES taskforce.users( id ) ON DELETE CASCADE ON UPDATE NO ACTION,
-	CONSTRAINT fk_favorites_executor FOREIGN KEY ( executor_id ) REFERENCES taskforce.users( id ) ON DELETE CASCADE ON UPDATE NO ACTION
- ) engine=InnoDB;
-
-ALTER TABLE taskforce.favorites COMMENT 'Избранные исполнители';
-
-CREATE TABLE taskforce.images_of_work ( 
-	id                   int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
-	user_id              int  NOT NULL    ,
-	filename             varchar(255)  NOT NULL    ,
-	CONSTRAINT fk_images_of_work_users FOREIGN KEY ( user_id ) REFERENCES taskforce.users( id ) ON DELETE CASCADE ON UPDATE NO ACTION
- ) engine=InnoDB;
-
-ALTER TABLE taskforce.images_of_work COMMENT 'Фото работ исполнителей';
-
-CREATE TABLE taskforce.specialisations ( 
-	executor_id          int  NOT NULL    ,
-	category_id          int  NOT NULL    ,
-	CONSTRAINT fk_specialisations_users FOREIGN KEY ( executor_id ) REFERENCES taskforce.users( id ) ON DELETE CASCADE ON UPDATE NO ACTION,
-	CONSTRAINT fk_specialisations_categories FOREIGN KEY ( category_id ) REFERENCES taskforce.categories( id ) ON DELETE CASCADE ON UPDATE NO ACTION
- ) engine=InnoDB;
-
-ALTER TABLE taskforce.specialisations COMMENT 'Специализации исполнителей';
-
-CREATE TABLE taskforce.tasks ( 
-	id                   int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
-	name                 varchar(128)  NOT NULL    ,
-	description          text  NOT NULL    ,
-	category_id          int  NOT NULL    ,
-	status_id            int  NOT NULL    ,
-	price                int  NOT NULL    ,
-	customer_id          int  NOT NULL    ,
-	date_add             datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP   ,
-	executor_id          int      ,
-	adress               varchar(255)      ,
-	city_id              int      ,
-	expire               date      ,
-	CONSTRAINT fk_tasks_categories FOREIGN KEY ( category_id ) REFERENCES taskforce.categories( id ) ON DELETE RESTRICT ON UPDATE RESTRICT,
-	CONSTRAINT fk_tasks_statuses FOREIGN KEY ( status_id ) REFERENCES taskforce.statuses( id ) ON DELETE NO ACTION ON UPDATE NO ACTION,
-	CONSTRAINT fk_tasks_customer FOREIGN KEY ( customer_id ) REFERENCES taskforce.users( id ) ON DELETE CASCADE ON UPDATE NO ACTION,
-	CONSTRAINT fk_tasks_executor FOREIGN KEY ( executor_id ) REFERENCES taskforce.users( id ) ON DELETE CASCADE ON UPDATE NO ACTION,
-	CONSTRAINT fk_tasks_cities FOREIGN KEY ( city_id ) REFERENCES taskforce.cities( id ) ON DELETE SET NULL ON UPDATE NO ACTION
- ) engine=InnoDB;
-
-ALTER TABLE taskforce.tasks MODIFY name varchar(128)  NOT NULL   COMMENT 'Заголовок задания';
-
-ALTER TABLE taskforce.tasks MODIFY description text  NOT NULL   COMMENT 'Текст задания';
-
-ALTER TABLE taskforce.tasks MODIFY category_id int  NOT NULL   COMMENT 'Идентификатор категории из таблицы типов категорий';
-
-ALTER TABLE taskforce.tasks MODIFY status_id int  NOT NULL   COMMENT 'Идентификатор статуса из таблицы статусов заданий';
-
-ALTER TABLE taskforce.tasks MODIFY price int  NOT NULL   COMMENT 'Цена заказчика';
-
-ALTER TABLE taskforce.tasks MODIFY customer_id int  NOT NULL   COMMENT 'Идентификатор заказчика из таблицы пользователей';
-
-ALTER TABLE taskforce.tasks MODIFY executor_id int     COMMENT 'Идентификатор исполнителя из таблицы пользователей';
-
-ALTER TABLE taskforce.tasks MODIFY city_id int     COMMENT 'Идентификатор города из таблицы городов';
-
-ALTER TABLE taskforce.tasks MODIFY expire date     COMMENT 'Срок исполнения задания';
-
-CREATE TABLE taskforce.user_notification ( 
-	user_id              int  NOT NULL    ,
-	notification_id      int  NOT NULL    ,
-	CONSTRAINT fk_user_notification_users FOREIGN KEY ( user_id ) REFERENCES taskforce.users( id ) ON DELETE CASCADE ON UPDATE NO ACTION,
-	CONSTRAINT fk_user_notification FOREIGN KEY ( notification_id ) REFERENCES taskforce.notification_types( id ) ON DELETE CASCADE ON UPDATE NO ACTION
- ) engine=InnoDB;
-
-ALTER TABLE taskforce.user_notification COMMENT 'Таблица настроек уведомлений пользователя.\nЕсли запись существует - уведомление активно.';
-
-ALTER TABLE taskforce.user_notification MODIFY notification_id int  NOT NULL   COMMENT 'Идентификатор типа уведомления';
-
-CREATE TABLE taskforce.feedbacks ( 
-	id                   int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
-	task_id              int  NOT NULL    ,
-	executor_id          int  NOT NULL    ,
-	rate                 int  NOT NULL    ,
-	created_at           datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP   ,
-	description          text      ,
-	CONSTRAINT fk_feedbacks_tasks FOREIGN KEY ( task_id ) REFERENCES taskforce.tasks( id ) ON DELETE CASCADE ON UPDATE NO ACTION,
-	CONSTRAINT fk_feedbacks_users FOREIGN KEY ( executor_id ) REFERENCES taskforce.users( id ) ON DELETE CASCADE ON UPDATE NO ACTION
- ) engine=InnoDB;
-
-ALTER TABLE taskforce.feedbacks COMMENT 'Отзывы пользователей об исполнителях';
-
-ALTER TABLE taskforce.feedbacks MODIFY task_id int  NOT NULL   COMMENT 'Идентификатор задания';
-
-CREATE TABLE taskforce.messages ( 
-	id                   int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
-	sender_id            int  NOT NULL    ,
-	receiver_id          int  NOT NULL    ,
-	task_id              int  NOT NULL    ,
-	message              text  NOT NULL    ,
-	created_at           datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP   ,
-	CONSTRAINT fk_messages_sender FOREIGN KEY ( sender_id ) REFERENCES taskforce.users( id ) ON DELETE CASCADE ON UPDATE NO ACTION,
-	CONSTRAINT fk_messages_receiver FOREIGN KEY ( receiver_id ) REFERENCES taskforce.users( id ) ON DELETE CASCADE ON UPDATE NO ACTION,
-	CONSTRAINT fk_messages_tasks FOREIGN KEY ( task_id ) REFERENCES taskforce.tasks( id ) ON DELETE CASCADE ON UPDATE NO ACTION
- ) engine=InnoDB;
-
-CREATE TABLE taskforce.responces ( 
-	id                   int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
-	task_id              int  NOT NULL    ,
-	executor_id          int  NOT NULL    ,
-	created_at           datetime  NOT NULL DEFAULT CURRENT_TIMESTAMP   ,
-	price                int      ,
-	comment              text      ,
-	CONSTRAINT fk_responces_tasks FOREIGN KEY ( task_id ) REFERENCES taskforce.tasks( id ) ON DELETE CASCADE ON UPDATE NO ACTION,
-	CONSTRAINT fk_responces_users FOREIGN KEY ( executor_id ) REFERENCES taskforce.users( id ) ON DELETE CASCADE ON UPDATE NO ACTION
- ) engine=InnoDB;
-
-ALTER TABLE taskforce.responces COMMENT 'История откликов исполнителей';
-
-ALTER TABLE taskforce.responces MODIFY task_id int  NOT NULL   COMMENT 'Идентификатор задания';
-
-ALTER TABLE taskforce.responces MODIFY executor_id int  NOT NULL   COMMENT 'Идентификатор исполнителя из таблицы пользователей';
-
-ALTER TABLE taskforce.responces MODIFY price int     COMMENT 'Цена исполнителя';
-
-CREATE TABLE taskforce.task_files ( 
-	id                   int  NOT NULL  AUTO_INCREMENT  PRIMARY KEY,
-	task_id              int  NOT NULL    ,
-	filename             varchar(128)  NOT NULL    ,
-	CONSTRAINT fk_task_files_tasks FOREIGN KEY ( task_id ) REFERENCES taskforce.tasks( id ) ON DELETE CASCADE ON UPDATE NO ACTION
- ) engine=InnoDB;
-
-ALTER TABLE taskforce.task_files COMMENT 'Файлы, прикрепленные к заданиям';
+CREATE TABLE responce
+(
+    id          int      NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    task_id     int      NOT NULL COMMENT 'РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ Р·Р°РґР°РЅРёСЏ',
+    executor_id int      NOT NULL COMMENT 'РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ РёСЃРїРѕР»РЅРёС‚РµР»СЏ РёР· С‚Р°Р±Р»РёС†С‹ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№',
+    created_at  datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    price       numeric(6, 2) COMMENT 'Р¦РµРЅР° РёСЃРїРѕР»РЅРёС‚РµР»СЏ',
+    comment     text,
+    CONSTRAINT fk_responces_tasks FOREIGN KEY (task_id) REFERENCES task (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT fk_responces_users FOREIGN KEY (executor_id) REFERENCES `user` (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+) COMMENT 'РСЃС‚РѕСЂРёСЏ РѕС‚РєР»РёРєРѕРІ РёСЃРїРѕР»РЅРёС‚РµР»РµР№';
