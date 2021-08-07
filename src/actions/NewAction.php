@@ -4,8 +4,8 @@
 namespace M2rk\Taskforce\actions;
 
 use M2rk\Taskforce\models\Status;
-use M2rk\Taskforce\Models\Task;
-use M2rk\Taskforce\Models\User;
+use M2rk\Taskforce\models\Task;
+use M2rk\Taskforce\models\User;
 
 class NewAction  extends Action
 {

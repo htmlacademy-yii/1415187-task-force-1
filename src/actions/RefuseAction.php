@@ -4,7 +4,7 @@
 namespace M2rk\Taskforce\actions;
 
 use M2rk\Taskforce\models\Status;
-use M2rk\Taskforce\Models\Task;
+use M2rk\Taskforce\models\Task;
 
 class RefuseAction extends Action
 {
