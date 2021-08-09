@@ -82,7 +82,7 @@ class Task
     public string $status;
 
 
-    public $initiatorId; // Attention! Not part of model!
+    public $initiatorId; // Attention! Not part of model
 
 
     public function __construct()
