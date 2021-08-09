@@ -29,22 +29,22 @@ class User
     /**
      * @var int
      */
-    public int $date_add;
+    public int $dateAdd;
 
     /**
      * @var string
      */
-    public string $date_activity;
+    public string $dateActivity;
 
     /**
      * @var bool
      */
-    public bool $is_visible;
+    public bool $isVisible;
 
     /**
      * @var int
      */
-    public int $city_id;
+    public int $cityId;
 
     /**
      * @var string
@@ -84,7 +84,7 @@ class User
     /**
      * @var bool
      */
-    public bool $is_deleted;
+    public bool $isDeleted;
 
 
     public static function isExecutor(int $user): bool

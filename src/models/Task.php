@@ -29,12 +29,12 @@ class Task
     /**
      * @var int
      */
-    public int $category_id;
+    public int $categoryId;
 
     /**
      * @var int
      */
-    public int $status_id;
+    public int $statusId;
 
     /**
      * @var float
@@ -44,17 +44,17 @@ class Task
     /**
      * @var int
      */
-    public int $customer_id;
+    public int $customerId;
 
     /**
      * @var int
      */
-    public int $date_add;
+    public int $dateAdd;
 
     /**
      * @var int
      */
-    public int $executor_id;
+    public int $executorId;
 
     /**
      * @var string
@@ -64,7 +64,7 @@ class Task
     /**
      * @var int
      */
-    public int $city_id;
+    public int $cityId;
 
     /**
      * @var int
@@ -82,24 +82,24 @@ class Task
     public string $status;
 
 
-    public $initiatorId;
+    public $initiatorId; // Attention! Not part of model!
 
 
     public function __construct()
     {
-        $this->date_add = time();
+        $this->dateAdd = time();
         $this->status = Status::STATUS_NEW;
         $this->user = new User();
     }
 
     public function getCustomerId(): int
     {
-        return $this->customer_id;
+        return $this->customerId;
     }
 
     public function getExecutorId(): int
     {
-        return $this->executor_id;
+        return $this->executorId;
     }
 
     public function getStatus(): string
@@ -114,12 +114,12 @@ class Task
 
     public function setCustomerId(int $id): void
     {
-        $this->customer_id = $id;
+        $this->customerId = $id;
     }
 
     public function setExecutorId(int $id): void
     {
-        $this->executor_id = $id;
+        $this->executorId = $id;
     }
 
     public function setInitiatorId(int $id): void
@@ -153,20 +153,20 @@ class Task
     public function getAvailableActions(): array
     {
         $result = [];
-        if ((new \M2rk\Taskforce\Actions\NewAction)->verifyAction($this, $this->initiatorId)) {
-            $result[] = (new \M2rk\Taskforce\Actions\NewAction)->getActionName();
+        if ((new NewAction)->verifyAction($this, $this->initiatorId)) {
+            $result[] = (new NewAction)->getActionName();
         }
-        if ((new \M2rk\Taskforce\Actions\StartAction)->verifyAction($this, $this->initiatorId)) {
-            $result[] = (new \M2rk\Taskforce\Actions\StartAction)->getActionName();
+        if ((new StartAction)->verifyAction($this, $this->initiatorId)) {
+            $result[] = (new StartAction)->getActionName();
         }
-        if ((new \M2rk\Taskforce\Actions\CancelAction)->verifyAction($this, $this->initiatorId)) {
-            $result[] = (new \M2rk\Taskforce\Actions\CancelAction)->getActionName();
+        if ((new CancelAction)->verifyAction($this, $this->initiatorId)) {
+            $result[] = (new CancelAction)->getActionName();
         }
-        if ((new \M2rk\Taskforce\Actions\RefuseAction)->verifyAction($this, $this->initiatorId)) {
-            $result[] = (new \M2rk\Taskforce\Actions\RefuseAction)->getActionName();
+        if ((new RefuseAction)->verifyAction($this, $this->initiatorId)) {
+            $result[] = (new RefuseAction)->getActionName();
         }
-        if ((new \M2rk\Taskforce\Actions\CompleteAction)->verifyAction($this, $this->initiatorId)) {
-            $result[] = (new \M2rk\Taskforce\Actions\CompleteAction)->getActionName();
+        if ((new CompleteAction)->verifyAction($this, $this->initiatorId)) {
+            $result[] = (new CompleteAction)->getActionName();
         }
         return $result;
     }
