@@ -1,8 +1,9 @@
 <?php
 
-use M2rk\Taskforce\Task;
+require_once '../index.php';
 
-require '../vendor/autoload.php';
+use M2rk\Taskforce\models\Status;
+use M2rk\Taskforce\models\Task;
 
 assert_options(ASSERT_ACTIVE, 1);
 assert_options(ASSERT_WARNING, 0);
@@ -19,12 +20,31 @@ function my_assert_handler($file, $line, $code, $desc = null)
 
 assert_options(ASSERT_CALLBACK, 'my_assert_handler');
 
-$action = new Task(1, 1, new DateTime(), Task::STATUS_NEW);
-assert($action->getNextStatus(Task::ACTION_CANCEL, Task::ROLE_CONSUMER) === 'Cancel');
-assert($action->getNextStatus(Task::ACTION_ASSIGN, Task::ROLE_CONSUMER) === 'In_work');
-assert($action->getNextStatus(Task::ACTION_RESPOND, Task::ROLE_EXECUTOR) === 'In_work');
+$task = new Task();
 
-$action = new Task(1, 1, new DateTime('yesterday noon'), Task::STATUS_IN_WORK);
-assert($action->getNextStatus(Task::ACTION_REFUSE, Task::ROLE_EXECUTOR) === 'Failed');
-assert($action->getNextStatus(Task::ACTION_REFUSE, Task::ROLE_EXECUTOR) === 'Failed');
-assert($action->getNextStatus(Task::ACTION_DONE, Task::ROLE_CONSUMER) === 'Done');
+$task->setCustomerId(121);
+$task->setExecutorId(120);
+$task->setInitiatorId(121);
+assert($task->getNewStatus('newTask') === Status::STATUS_NEW, 'При действии "Создать задание" метод вернёт статус "Новое"');
+assert($task->getNewStatus('startTask') === Status::STATUS_EXECUTION, 'При действии "Начать задание" метод вернёт статус "В работе"');
+assert($task->getNewStatus('cancelTask') === Status::STATUS_CANCELED, 'При действии "Отменить задание" метод вернёт статус "Отменено"');
+assert($task->getNewStatus('refuseTask') === Status::STATUS_FAILED, 'При действии "Отказаться от задания" метод вернёт статус "Провалено"');
+assert($task->getNewStatus('completeTask') === Status::STATUS_DONE, 'При действии "Завершить задание" метод вернёт статус "Выполнено"');
+
+$task->getNewStatus('newTask');
+assert($task->start() === null, 'При действии "Начать задание" метод вернет null так как пользователь не имеет роли "Исполнитель"');
+
+$task->setInitiatorId(120);
+assert($task->start() === Status::STATUS_EXECUTION, 'При действии "Начать задание" метод вернёт статус "В работе"');
+assert($task->refuse() === Status::STATUS_FAILED, 'При действии "Отказаться от задания" метод вернёт статус "Провалено"');
+assert($task->cancel() === null, 'При действии "Отменить задание" метод вернёт null так как пользователь не совпадает с заказчиком и статус задачи не "В работе"');
+
+$task->setInitiatorId(121);
+$task->getNewStatus('newTask');
+assert($task->cancel() === Status::STATUS_CANCELED, 'При действии "Отменить задание" метод вернёт статус "Отменено"');
+assert($task->complete() === null, 'При действии "Завершить задание" метод вернёт null так как статус задания "Отменено"');
+
+$task->getNewStatus('startTask');
+assert($task->complete() === Status::STATUS_DONE, 'При действии "Завершить" метод вернёт статус "Выполнено"');
+
+print $task->getStatus();
