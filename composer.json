@@ -6,7 +6,10 @@
     "autoload": {
         "psr-4": {
             "M2rk\\Taskforce\\": "src/"
-        }
+        },
+        "files": [
+          "settings/config.php"
+        ]
     },
     "authors": [
         {
