@@ -22,7 +22,7 @@ class CompleteAction extends Action
     public function verifyAction(Task $task, int $userId): bool
     {
         if ($userId !== $task->getCustomerId()) {
-            throw new RoleBaseException('Ошибка: Текущий пользователь не является иницицатором.');
+            throw new RoleBaseException('Ошибка: Текущий пользователь не является заказчиком.');
         }
 
         if ($task->getStatus() !== Status::STATUS_EXECUTION) {

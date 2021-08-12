@@ -27,7 +27,7 @@ class StartAction extends Action
             throw new RoleBaseException('Ошибка: Текущий пользователь не является исполнителем.');
         }
 
-        if (!$task->getStatus() !== Status::STATUS_NEW) {
+        if ($task->getStatus() !== Status::STATUS_NEW) {
             throw new ActionBaseException('Ошибка. Статус задачи не ' . Status::STATUS_NEW . '.');
         }
 
