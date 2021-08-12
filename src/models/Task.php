@@ -1,6 +1,5 @@
 <?php
 
-
 namespace M2rk\Taskforce\models;
 
 use M2rk\Taskforce\actions\CancelAction;
@@ -8,6 +7,7 @@ use M2rk\Taskforce\actions\CompleteAction;
 use M2rk\Taskforce\actions\NewAction;
 use M2rk\Taskforce\actions\RefuseAction;
 use M2rk\Taskforce\actions\StartAction;
+use M2rk\Taskforce\exceptions\StatusBaseException;
 
 class Task
 {
@@ -81,9 +81,7 @@ class Task
      */
     public string $status;
 
-
     public $initiatorId; // Attention! Not part of model
-
 
     public function __construct()
     {
@@ -171,36 +169,38 @@ class Task
         return $result;
     }
 
+    /**
+     * @throws StatusBaseException
+     */
     public function start(): ?string
     {
-        if ((new StartAction)->verifyAction($this, $this->initiatorId)) {
-            return $this->status = Status::STATUS_EXECUTION;
+        if (!(new StartAction)->verifyAction($this, $this->initiatorId)) {
+            throw new StatusBaseException('Ошибка при установке статуса ' . Status::STATUS_EXECUTION);
         }
-        return null;
+        return $this->status = Status::STATUS_EXECUTION;
     }
 
     public function cancel(): ?string
     {
-        if ((new CancelAction)->verifyAction($this, $this->initiatorId)) {
-            return $this->status = Status::STATUS_CANCELED;
+        if (!(new CancelAction)->verifyAction($this, $this->initiatorId)) {
+            throw new StatusBaseException('Ошибка при установке статуса ' . Status::STATUS_CANCELED);
         }
-        return null;
+        return $this->status = Status::STATUS_CANCELED;
     }
 
     public function refuse(): ?string
     {
-        if ((new RefuseAction)->verifyAction($this, $this->initiatorId)) {
-            return $this->status = Status::STATUS_FAILED;
+        if (!(new RefuseAction)->verifyAction($this, $this->initiatorId)) {
+            throw new StatusBaseException('Ошибка при установке статуса ' . Status::STATUS_FAILED);
         }
-        return null;
+        return $this->status = Status::STATUS_FAILED;
     }
 
     public function complete(): ?string
     {
-        if ((new CompleteAction)->verifyAction($this, $this->initiatorId)) {
-            return $this->status = Status::STATUS_DONE;
+        if (!(new CompleteAction)->verifyAction($this, $this->initiatorId)) {
+            throw new StatusBaseException('Ошибка при установке статуса ' . Status::STATUS_DONE);
         }
-        return null;
+        return $this->status = Status::STATUS_DONE;
     }
-
 }

@@ -1,13 +1,14 @@
 <?php
 
-
 namespace M2rk\Taskforce\actions;
 
+use M2rk\Taskforce\exceptions\ActionBaseException;
+use M2rk\Taskforce\exceptions\RoleBaseException;
 use M2rk\Taskforce\models\Status;
 use M2rk\Taskforce\models\Task;
 use M2rk\Taskforce\models\User;
 
-class NewAction  extends Action
+class NewAction extends Action
 {
     public function getNameClass(): string
     {
@@ -21,6 +22,14 @@ class NewAction  extends Action
 
     public function verifyAction(Task $task, int $userId): bool
     {
-        return User::isCustomer($userId) === true && $task->getStatus() === Status::STATUS_NEW;
+        if (!User::isCustomer($userId)) {
+            throw new RoleBaseException('Ошибка: Текущий пользователь не является заказчиком.');
+        }
+
+        if ($task->getStatus() !== Status::STATUS_NEW) {
+            throw new ActionBaseException('Ошибка. Статус задачи не ' . Status::STATUS_NEW . '.');
+        }
+
+        return true;
     }
 }
