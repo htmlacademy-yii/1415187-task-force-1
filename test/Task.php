@@ -33,9 +33,9 @@ try {
     echo $task->getStatus() . PHP_EOL;
 
 } catch (ActionBaseException $e) {
-    print $e->getMessage() . "\n";
+    print $e->userMessage() . "\n";
 } catch (RoleBaseException $e) {
-    print $e->getMessage() . "\n";
+    print $e->userMessage() . "\n";
 } catch (StatusBaseException $e) {
-    print $e->getMessage() . "\n";
+    print $e->userMessage() . "\n";
 }
