@@ -22,11 +22,11 @@ class CompleteAction extends Action
     public function verifyAction(Task $task, int $userId): bool
     {
         if ($userId !== $task->getCustomerId()) {
-            throw new RoleBaseException('Ошибка: Текущий пользователь не является заказчиком.');
+            throw new RoleBaseException('Текущий пользователь не является заказчиком.');
         }
 
         if ($task->getStatus() !== Status::STATUS_EXECUTION) {
-            throw new ActionBaseException('Ошибка: Статус задачи не ' . Status::STATUS_EXECUTION . '.');
+            throw new ActionBaseException('Статус задачи не ' . Status::STATUS_EXECUTION . '.');
         }
 
         return true;

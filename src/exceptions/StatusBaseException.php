@@ -6,8 +6,8 @@ use Exception;
 
 class StatusBaseException extends Exception
 {
-    public function userMessage()
+    public function userMessage(): string
     {
-        echo 'Произошла ошибка статуса:' . $this->getMessage();
+        return 'Произошла ошибка статуса:' . $this->getMessage();
     }
 }

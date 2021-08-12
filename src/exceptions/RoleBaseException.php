@@ -6,8 +6,8 @@ use Exception;
 
 class RoleBaseException extends Exception
 {
-    public function userMessage()
+    public function userMessage(): string
     {
-        echo 'Произошла ошибка роли:' . $this->getMessage();
+        return 'Произошла ошибка роли:' . $this->getMessage();
     }
 }

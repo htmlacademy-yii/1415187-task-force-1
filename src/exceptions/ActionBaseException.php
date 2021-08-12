@@ -6,8 +6,8 @@ use Exception;
 
 class ActionBaseException extends Exception
 {
-    public function userMessage()
+    public function userMessage(): string
     {
-        echo 'Произошла ошибка действия:' . $this->getMessage();
+        return 'Произошла ошибка действия:' . $this->getMessage();
     }
 }

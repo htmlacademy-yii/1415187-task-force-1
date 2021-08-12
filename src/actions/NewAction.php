@@ -23,11 +23,11 @@ class NewAction extends Action
     public function verifyAction(Task $task, int $userId): bool
     {
         if (!User::isCustomer($userId)) {
-            throw new RoleBaseException('Ошибка: Текущий пользователь не является заказчиком.');
+            throw new RoleBaseException('Текущий пользователь не является заказчиком.');
         }
 
         if ($task->getStatus() !== Status::STATUS_NEW) {
-            throw new ActionBaseException('Ошибка. Статус задачи не ' . Status::STATUS_NEW . '.');
+            throw new ActionBaseException('Статус задачи не ' . Status::STATUS_NEW . '.');
         }
 
         return true;
