@@ -1,10 +1,12 @@
 <?php
 
-
 namespace M2rk\Taskforce\actions;
 
+use M2rk\Taskforce\exceptions\ActionBaseException;
+use M2rk\Taskforce\exceptions\RoleBaseException;
 use M2rk\Taskforce\models\Status;
 use M2rk\Taskforce\models\Task;
+use M2rk\Taskforce\validators\ActionValidator;
 
 class RefuseAction extends Action
 {
@@ -18,8 +20,15 @@ class RefuseAction extends Action
         return 'refuseTask';
     }
 
+    /**
+     * @throws ActionBaseException
+     * @throws RoleBaseException
+     */
     public function verifyAction(Task $task, int $userId): bool
     {
-        return $userId === $task->getExecutorId() && $task->getStatus() === Status::STATUS_EXECUTION;
+        ActionValidator::isExecutor($userId);
+        ActionValidator::isStatus($task, Status::STATUS_EXECUTION);
+
+        return true;
     }
 }
