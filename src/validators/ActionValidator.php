@@ -4,6 +4,7 @@ namespace M2rk\Taskforce\validators;
 
 use M2rk\Taskforce\exceptions\ActionBaseException;
 use M2rk\Taskforce\exceptions\RoleBaseException;
+use M2rk\Taskforce\models\Task;
 use M2rk\Taskforce\models\User;
 
 class ActionValidator
@@ -11,7 +12,7 @@ class ActionValidator
     /**
      * @throws RoleBaseException
      */
-    public static function isExecutor($userId): void
+    public static function isExecutor(int $userId): void
     {
         if (!User::isExecutor($userId)) {
             throw new RoleBaseException('Текущий пользователь не является исполнителем.');
@@ -21,7 +22,7 @@ class ActionValidator
     /**
      * @throws RoleBaseException
      */
-    public static function isCustomer($userId): void
+    public static function isCustomer(int $userId): void
     {
         if (!User::isCustomer($userId)) {
             throw new RoleBaseException('Ошибка: Текущий пользователь не является заказчиком.');
@@ -31,7 +32,7 @@ class ActionValidator
     /**
      * @throws ActionBaseException
      */
-    public static function isStatus($task, $status): void
+    public static function isStatus(Task $task, string $status): void
     {
         if ($task->getStatus() !== $status) {
             throw new ActionBaseException('Статус задачи не ' . $status . '.');
