@@ -6,6 +6,7 @@ use M2rk\Taskforce\exceptions\ActionBaseException;
 use M2rk\Taskforce\exceptions\RoleBaseException;
 use M2rk\Taskforce\models\Status;
 use M2rk\Taskforce\models\Task;
+use M2rk\Taskforce\validators\ActionValidator;
 
 class CompleteAction extends Action
 {
@@ -19,15 +20,14 @@ class CompleteAction extends Action
         return 'completeTask';
     }
 
+    /**
+     * @throws RoleBaseException
+     * @throws ActionBaseException
+     */
     public function verifyAction(Task $task, int $userId): bool
     {
-        if ($userId !== $task->getCustomerId()) {
-            throw new RoleBaseException('Текущий пользователь не является заказчиком.');
-        }
-
-        if ($task->getStatus() !== Status::STATUS_EXECUTION) {
-            throw new ActionBaseException('Статус задачи не ' . Status::STATUS_EXECUTION . '.');
-        }
+        ActionValidator::isCustomer($userId);
+        ActionValidator::isStatus($task, Status::STATUS_EXECUTION);
 
         return true;
     }
