@@ -1,30 +1,41 @@
 <?php
 
-use M2rk\Taskforce\Task;
+require_once '../index.php';
 
-require '../vendor/autoload.php';
+use M2rk\Taskforce\exceptions\ActionBaseException;
+use M2rk\Taskforce\exceptions\RoleBaseException;
+use M2rk\Taskforce\exceptions\StatusBaseException;
+use M2rk\Taskforce\models\Task;
 
-assert_options(ASSERT_ACTIVE, 1);
-assert_options(ASSERT_WARNING, 0);
+$task = new Task();
 
-function my_assert_handler($file, $line, $code, $desc = null)
-{
-    echo 'Assertion failed at $file:$line: $code';
-    if ($desc) {
-        echo ': $desc';
-    }
-    echo '\n';
-    echo '<br>';
+try {
+    $task->setCustomerId(121);
+    $task->setExecutorId(120);
+    echo $task->getStatus() . PHP_EOL . '<br>';
+    $task->setInitiatorId(120);
+    $task->start();
+    echo '<br>' . $task->getStatus() . PHP_EOL . '<br>';
+    $task->refuse();
+    echo '<br>' . $task->getStatus() . PHP_EOL . '<br>';
+
+    $task->setInitiatorId(121);
+    $task->getNewStatus('newTask');
+    $task->cancel();
+    echo '<br>' . $task->getStatus() . PHP_EOL . '<br>';
+
+    $task->setInitiatorId(121);
+    $task->getNewStatus('newTask');
+    $task->setInitiatorId(120);
+    $task->start();
+    $task->setInitiatorId(121);
+    $task->complete();
+    echo '<br>' . $task->getStatus() . PHP_EOL;
+
+} catch (ActionBaseException $e) {
+    print $e->getMessage() . "\n";
+} catch (RoleBaseException $e) {
+    print $e->getMessage() . "\n";
+} catch (StatusBaseException $e) {
+    print $e->getMessage() . "\n";
 }
-
-assert_options(ASSERT_CALLBACK, 'my_assert_handler');
-
-$action = new Task(1, 1, new DateTime(), Task::STATUS_NEW);
-assert($action->getNextStatus(Task::ACTION_CANCEL, Task::ROLE_CONSUMER) === 'Cancel');
-assert($action->getNextStatus(Task::ACTION_ASSIGN, Task::ROLE_CONSUMER) === 'In_work');
-assert($action->getNextStatus(Task::ACTION_RESPOND, Task::ROLE_EXECUTOR) === 'In_work');
-
-$action = new Task(1, 1, new DateTime('yesterday noon'), Task::STATUS_IN_WORK);
-assert($action->getNextStatus(Task::ACTION_REFUSE, Task::ROLE_EXECUTOR) === 'Failed');
-assert($action->getNextStatus(Task::ACTION_REFUSE, Task::ROLE_EXECUTOR) === 'Failed');
-assert($action->getNextStatus(Task::ACTION_DONE, Task::ROLE_CONSUMER) === 'Done');
