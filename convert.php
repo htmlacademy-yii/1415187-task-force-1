@@ -1,11 +1,10 @@
 <?php
 
-use M2rk\Taskforce\convertors\CsvImporter;
+require_once 'vendor/autoload.php';
 
-require_once 'index.php';
+use M2rk\Taskforce\convertors\CsvConverter;
 
-$test = new CsvImporter();
-
-$test->joinCSVUser();
-
-$test->interpreter();
+foreach (glob('data/new/*.csv') as $pathFile) {
+    $file = new CsvConverter($pathFile);
+    $file->convert();
+}
