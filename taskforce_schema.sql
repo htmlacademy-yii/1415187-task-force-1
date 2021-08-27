@@ -28,7 +28,7 @@ CREATE TABLE notification_type
 
 CREATE TABLE status
 (
-    id   int         NOT NULL PRIMARY KEY,
+    id   int         NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name varchar(64) NOT NULL
 ) COMMENT 'Статусы заданий';
 

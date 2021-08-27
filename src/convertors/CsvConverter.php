@@ -46,7 +46,7 @@ class CsvConverter
 
     private function writeHeader(SplFileObject $file, array $headers): void
     {
-        $headers = implode(',', $headers);
+        $headers = '`' . implode('`,`', $headers) . '`';
         $string = "INSERT INTO `taskforce`.`{$this->fileParams['file_name']}` ($headers)\nVALUES";
         $file->fwrite($string);
     }

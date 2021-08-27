@@ -6,7 +6,7 @@ use M2rk\Taskforce\exceptions\ActionBaseException;
 use M2rk\Taskforce\exceptions\RoleBaseException;
 use M2rk\Taskforce\models\Status;
 use M2rk\Taskforce\models\Task;
-use M2rk\Taskforce\convertors\ActionValidator;
+use M2rk\Taskforce\validators\ActionValidator;
 
 class RefuseAction extends Action
 {

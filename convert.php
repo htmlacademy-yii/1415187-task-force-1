@@ -8,3 +8,5 @@ foreach (glob('data/new/*.csv') as $pathFile) {
     $file = new CsvConverter($pathFile);
     $file->convert();
 }
+
+echo 'Работа конвертера завершена';
