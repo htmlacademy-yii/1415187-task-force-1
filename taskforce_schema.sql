@@ -28,7 +28,7 @@ CREATE TABLE notification_type
 
 CREATE TABLE status
 (
-    id   int         NOT NULL PRIMARY KEY,
+    id   int         NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name varchar(64) NOT NULL
 ) COMMENT 'Статусы заданий';
 
@@ -124,7 +124,7 @@ CREATE TABLE feedback
     description text,
     CONSTRAINT fk_feedbacks_tasks FOREIGN KEY (task_id) REFERENCES task (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
     CONSTRAINT fk_feedbacks_users FOREIGN KEY (executor_id) REFERENCES `user` (id) ON DELETE NO ACTION ON UPDATE NO ACTION
-) COMMENT 'Отзывы пользователей об исполнителях';
+) COMMENT 'Отзывы пользователей о заданиях';
 
 CREATE TABLE message
 (
@@ -150,3 +150,15 @@ CREATE TABLE responce
     CONSTRAINT fk_responces_tasks FOREIGN KEY (task_id) REFERENCES task (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
     CONSTRAINT fk_responces_users FOREIGN KEY (executor_id) REFERENCES `user` (id) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) COMMENT 'История откликов исполнителей';
+
+CREATE TABLE opinion
+(
+    id          int      NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    executor_id int      NOT NULL,
+	customer_id int      NOT NULL,
+    rate        int      NOT NULL,
+    created_at  datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    description text,
+    CONSTRAINT fk_opinions_executors FOREIGN KEY (executor_id) REFERENCES `user` (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+	CONSTRAINT fk_opinions_customers FOREIGN KEY (customer_id) REFERENCES `user` (id) ON DELETE NO ACTION ON UPDATE NO ACTION
+) COMMENT 'Отзывы пользователей об исполнителях';

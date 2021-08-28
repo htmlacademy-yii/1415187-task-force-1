@@ -17,5 +17,7 @@
             "email": "morgunov.mark@bk.ru"
         }
     ],
-    "require": {}
+    "require": {
+      "ext-mbstring": "*"
+    }
 }
