@@ -1,0 +1,7 @@
+INSERT INTO `taskforce`.`status` (`name`)
+VALUES
+("STATUS_NEW"),
+("STATUS_EXECUTION"),
+("STATUS_CANCELED"),
+("STATUS_FAILED"),
+("STATUS_DONE")
