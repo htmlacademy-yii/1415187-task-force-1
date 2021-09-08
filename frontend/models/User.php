@@ -11,8 +11,8 @@ use Yii;
  * @property string $email
  * @property string $name
  * @property string $password
- * @property string $date_add Время последней активности на сайте
- * @property string $date_activity
+ * @property string $date_add
+ * @property string $date_activity Время последней активности на сайте
  * @property int $is_visible Показывает/скрывает профиль пользователя. Если пользователь заказчик - скрыть контакты со страницы пользователя. Если пользователь исполнитель - скрыть показ карточки со страницы исполнителей.
  * @property int|null $city_id Идентификатор города из таблицы городов
  * @property string|null $address Адрес пользователя

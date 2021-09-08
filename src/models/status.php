@@ -1,7 +1,7 @@
 <?php
 
 
-namespace M2rk\Taskforce\models;
+namespace Taskforce\models;
 
 
 class Status

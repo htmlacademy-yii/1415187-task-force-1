@@ -14,6 +14,12 @@ use Yii;
  */
 class Status extends \yii\db\ActiveRecord
 {
+    public const STATUS_NEW = 1;
+    public const STATUS_EXECUTION = 2;
+    public const STATUS_CANCELED = 3;
+    public const STATUS_FAILED = 4;
+    public const STATUS_DONE = 5;
+
     /**
      * {@inheritdoc}
      */

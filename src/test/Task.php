@@ -5,7 +5,7 @@ require_once '../index.php';
 use M2rk\Taskforce\exceptions\ActionBaseException;
 use M2rk\Taskforce\exceptions\RoleBaseException;
 use M2rk\Taskforce\exceptions\StatusBaseException;
-use M2rk\Taskforce\models\Task;
+use Taskforce\models\Task;
 
 $task = new Task();
 
