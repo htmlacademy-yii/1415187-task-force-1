@@ -23,7 +23,7 @@ use backend\helpers\BaseHelper;
                     </div>
                     <div class="feedback-card__top--name user__search-card">
                         <p class="link-name"><a href="user.html" class="link-regular"><?= $user->name ?></a></p>
-                        <span <?= $rating < 1 ? 'class="star-disabled"' : '' ?>></span><span <?= $rating < 2 ? 'class="star-disabled"' : '' ?>></span><span <?= $rating < 3 ? 'class="star-disabled"' : '' ?>></span><span <?= $rating < 4 ? 'class="star-disabled"' : '' ?>></span><span <?= $rating < 5 ? 'class="star-disabled"' : '' ?>></span>
+                        <span <?= $rating < 0.5 ? 'class="star-disabled"' : '' ?>></span><span <?= $rating < 1.5 ? 'class="star-disabled"' : '' ?>></span><span <?= $rating < 2.5 ? 'class="star-disabled"' : '' ?>></span><span <?= $rating < 3.5 ? 'class="star-disabled"' : '' ?>></span><span <?= $rating < 4.5 ? 'class="star-disabled"' : '' ?>></span>
                         <b><?= $rating ?></b>
                         <p class="user__search-content">
                             <?= $user->about ?>
