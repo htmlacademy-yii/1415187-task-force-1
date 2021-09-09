@@ -2,7 +2,9 @@
 
 namespace app\models;
 
+use phpDocumentor\Reflection\Types\Expression;
 use Yii;
+use yii\db\Query;
 
 /**
  * This is the model class for table "user".
@@ -109,7 +111,7 @@ class User extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|FavoriteQuery
      */
-    public function getFavorites()
+    public function getFavoritesCustomer()
     {
         return $this->hasMany(Favorite::className(), ['customer_id' => 'id']);
     }
@@ -119,7 +121,7 @@ class User extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|FavoriteQuery
      */
-    public function getFavorites0()
+    public function getFavoritesExecutor()
     {
         return $this->hasMany(Favorite::className(), ['executor_id' => 'id']);
     }
@@ -139,7 +141,7 @@ class User extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|MessageQuery
      */
-    public function getMessages()
+    public function getMessagesReciever()
     {
         return $this->hasMany(Message::className(), ['receiver_id' => 'id']);
     }
@@ -149,7 +151,7 @@ class User extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|MessageQuery
      */
-    public function getMessages0()
+    public function getMessagesSender()
     {
         return $this->hasMany(Message::className(), ['sender_id' => 'id']);
     }
@@ -159,7 +161,7 @@ class User extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|OpinionQuery
      */
-    public function getOpinions()
+    public function getOpinionsCustomer()
     {
         return $this->hasMany(Opinion::className(), ['customer_id' => 'id']);
     }
@@ -169,9 +171,23 @@ class User extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|OpinionQuery
      */
-    public function getOpinions0()
+    public function getOpinionsExecutor()
     {
         return $this->hasMany(Opinion::className(), ['executor_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[Opinions0]].
+     *
+     * @return array|\yii\db\ActiveRecord
+     * @throws \yii\db\Exception
+     */
+    public function getOpinionsExecutorRate()
+    {
+        return $this->hasMany(Opinion::className(), ['executor_id' => 'id'])
+            ->select(['rating' => new \yii\db\Expression('sum(rate) / count(rate)')])
+            ->createCommand()
+            ->queryOne();
     }
 
     /**
@@ -209,7 +225,7 @@ class User extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|TaskQuery
      */
-    public function getTasks()
+    public function getTasksCustomer()
     {
         return $this->hasMany(Task::className(), ['customer_id' => 'id']);
     }
@@ -219,7 +235,7 @@ class User extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|TaskQuery
      */
-    public function getTasks0()
+    public function getTasksExecutor()
     {
         return $this->hasMany(Task::className(), ['executor_id' => 'id']);
     }
@@ -251,5 +267,17 @@ class User extends \yii\db\ActiveRecord
     public static function find()
     {
         return new UserQuery(get_called_class());
+    }
+
+    /**
+     * Gets query completed tasks for user
+     *
+     * @return array|Task[]|\yii\db\ActiveRecord[]
+     */
+    public function getCompletedTasksExecutor()
+    {
+        return $this->getTasksExecutor()
+            ->andFilterWhere(['status_id' => Status::STATUS_DONE])
+            ->all();
     }
 }

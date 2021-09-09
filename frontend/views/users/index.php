@@ -9,26 +9,27 @@ use backend\helpers\BaseHelper;
 ?>
 
 <section class="user__search">
-    <?php foreach ($users as $user): ?>
-        <?php if (!empty($user->specialisation)): ?>
+    <?php foreach ($users as $user):
+        if (!empty($user->specialisation)):
+            $taskCount = count($user->completedTasksExecutor);
+            $opinionCount = count($user->opinionsExecutor);
+            $rating = round($user->opinionsExecutorRate['rating'], 2); ?>
             <div class="content-view__feedback-card user__search-wrapper">
                 <div class="feedback-card__top">
                     <div class="user__search-icon">
                         <a href="user.html"><img src="<?= $user->avatar ?>" width="65" height="65"></a>
-                        <span><?php BaseHelper::get_noun_plural_form() // TODO Доработать метод, добавиь недостающие записи ?></span>
-                        <span>6 отзывов</span>
+                        <span><?= "{$taskCount} " . BaseHelper::get_noun_plural_form($taskCount, 'tasks') ?></span>
+                        <span><?= "{$opinionCount} " . BaseHelper::get_noun_plural_form($opinionCount, 'feedbacks') ?></span>
                     </div>
                     <div class="feedback-card__top--name user__search-card">
-                        <p class="link-name"><a href="user.html" class="link-regular">Астахов Павел</a></p>
-                        <span></span><span></span><span></span><span></span><span class="star-disabled"></span>
-                        <b>4.25</b>
+                        <p class="link-name"><a href="user.html" class="link-regular"><?= $user->name ?></a></p>
+                        <span <?= $rating < 1 ? 'class="star-disabled"' : '' ?>></span><span <?= $rating < 2 ? 'class="star-disabled"' : '' ?>></span><span <?= $rating < 3 ? 'class="star-disabled"' : '' ?>></span><span <?= $rating < 4 ? 'class="star-disabled"' : '' ?>></span><span <?= $rating < 5 ? 'class="star-disabled"' : '' ?>></span>
+                        <b><?= $rating ?></b>
                         <p class="user__search-content">
-                            Сложно сказать, почему элементы политического процесса лишь
-                            добавляют фракционных разногласий и рассмотрены исключительно
-                            в разрезе маркетинговых и финансовых предпосылок.
+                            <?= $user->about ?>
                         </p>
                     </div>
-                    <span class="new-task__time">Был на сайте 25 минут назад</span>
+                    <span class="new-task__time">Был на сайте <?= BaseHelper::time_difference($user->date_activity) ?> назад</span>
                 </div>
                 <div class="link-specialization user__search-link--bottom">
                     <?php foreach ($user->specialisation as $spec): ?>

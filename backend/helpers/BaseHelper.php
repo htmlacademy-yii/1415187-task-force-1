@@ -10,7 +10,56 @@ class BaseHelper
 {
     public const NOUN_PLURAL_KEYS =
         [
-            'time' => ['one' => ''];
+            'secs' => [
+                'one'  => 'секунду',
+                'two'  => 'секунд',
+                'many' => 'секунды',
+            ],
+            'mins' => [
+                'one'  => 'минуту',
+                'two'  => 'минуты',
+                'many' => 'минут',
+            ],
+            'hours' => [
+                'one'  => 'час',
+                'two'  => 'часа',
+                'many' => 'часов',
+            ],
+            'days' => [
+                'one'  => 'день',
+                'two'  => 'дня',
+                'many' => 'дней',
+            ],
+            'weeks' => [
+                'one'  => 'неделю',
+                'two'  => 'недели',
+                'many' => 'недель',
+            ],
+            'months' => [
+                'one'  => 'месяц',
+                'two'  => 'месяца',
+                'many' => 'месяцев',
+            ],
+            'years' => [
+                'one'  => 'год',
+                'two'  => 'года',
+                'many' => 'лет',
+            ],
+            'tasks' => [
+                'one'  => 'задание',
+                'two'  => 'задания',
+                'many' => 'заданий',
+            ],
+            'comments' => [
+                'one'  => 'комментарий',
+                'two'  => 'комментария',
+                'many' => 'комментариев',
+            ],
+            'feedbacks' => [
+                'one'  => 'отзыв',
+                'two'  => 'отзыва',
+                'many' => 'отзывов',
+            ],
         ];
 
     /**
@@ -28,33 +77,20 @@ class BaseHelper
      * Результат: "Я поставил таймер на 5 минут"
      *
      * @param int    $number Число, по которому вычисляем форму множественного числа
-     * @param string $one    Форма единственного числа: яблоко, час, минута
-     * @param string $two    Форма множественного числа для 2, 3, 4: яблока, часа, минуты
-     * @param string $many   Форма множественного числа для остальных чисел
+     * @param string $key Ключ массива с маппингом
      * @return string Рассчитанная форма множественнго числа
      */
-    public static function get_noun_plural_form(int $number, string $one, string $two, string $many): string
+    public static function get_noun_plural_form(int $number, string $key): string
     {
-        $number = (int)$number;
         $mod10 = $number % 10;
         $mod100 = $number % 100;
 
-        switch (true) {
-            case ($mod100 >= 11 && $mod100 <= 20):
-                return $many;
-
-            case ($mod10 > 5):
-                return $many;
-
-            case ($mod10 === 1):
-                return $one;
-
-            case ($mod10 >= 2 && $mod10 <= 4):
-                return $two;
-
-            default:
-                return $many;
-        }
+        return match (true) {
+            $mod100 >= 11 && $mod100 <= 14 => self::NOUN_PLURAL_KEYS[$key]['many'],
+            $mod10 === 1 => self::NOUN_PLURAL_KEYS[$key]['one'],
+            $mod10 >= 2 && $mod10 <= 4 => self::NOUN_PLURAL_KEYS[$key]['two'],
+            default => self::NOUN_PLURAL_KEYS[$key]['many'],
+        };
     }
 
     /**
@@ -72,32 +108,33 @@ class BaseHelper
         try {
             $diff = date_diff(new DateTime(), new DateTime($time));
         } catch (Exception) {
-            throw new BadDateException('Не удалось');
+            throw new BadDateException('Не удалось преобразовать дату');
         }
 
         if ($diff->y > 0) {
             $relative_time = $diff->y . ' ' .
-                self::get_noun_plural_form($diff->y, 'год', 'года', 'лет');
+                self::get_noun_plural_form($diff->y, 'years');
         } elseif ($diff->m > 0) {
             $relative_time = $diff->m . ' ' .
-                self::get_noun_plural_form($diff->m, 'месяц', 'месяца', 'месяцев');
+                self::get_noun_plural_form($diff->m, 'months');
         } elseif ($diff->d > 6) {
             $relative_time = floor(($diff->d) / 7) . ' ' .
-                self::get_noun_plural_form(floor(($diff->d) / 7), ' неделю', ' недели', ' недель');
+                self::get_noun_plural_form(floor(($diff->d) / 7), 'weeks');
         } elseif ($diff->d > 0) {
             $relative_time = $diff->d . ' ' .
-                self::get_noun_plural_form($diff->d, 'день', 'дня', 'дней');
+                self::get_noun_plural_form($diff->d, 'days');
         } elseif ($diff->h > 0) {
             $relative_time = $diff->h . ' ' .
-                self::get_noun_plural_form($diff->h, 'час', 'часа', 'часов');
+                self::get_noun_plural_form($diff->h, 'hours');
         } elseif ($diff->i > 0) {
             $relative_time = $diff->i . ' ' .
-                self::get_noun_plural_form($diff->i, 'минуту', 'минуты', 'минут');
+                self::get_noun_plural_form($diff->i, 'mins');
         } elseif ($diff->s >= 0) {
             $relative_time = 'Менее минуты';
         } else {
-            $relative_time = '';
+            throw new BadDateException('Не удалось преобразовать дату');
         }
+
         return $relative_time;
     }
 }
