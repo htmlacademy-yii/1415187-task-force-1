@@ -85,8 +85,8 @@ AppAsset::register($this);
                 </div>
                 <div class="header__nav">
                     <ul class="header-nav__list site-list">
-                        <li class="site-list__item site-list__item--active">
-                            <a href="#">Задания</a>
+                        <li class="site-list__item"> <!-- site-list__item--active -->
+                            <a href="tasks.html">Задания</a>
                         </li>
                         <li class="site-list__item">
                             <a href="users.html">Исполнители</a>

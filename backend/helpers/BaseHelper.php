@@ -8,6 +8,11 @@ use Exception;
 
 class BaseHelper
 {
+    public const NOUN_PLURAL_KEYS =
+        [
+            'time' => ['one' => ''];
+        ];
+
     /**
      * Возвращает корректную форму множественного числа
      * Ограничения: только для целых чисел

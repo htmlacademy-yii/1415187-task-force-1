@@ -235,6 +235,16 @@ class User extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[Specialisation]].
+     *
+     * @return \yii\db\ActiveQuery|SpecialisationQuery
+     */
+    public function getSpecialisation()
+    {
+        return $this->hasMany(Specialisation::className(), ['executor_id' => 'id']);
+    }
+
+    /**
      * {@inheritdoc}
      * @return UserQuery the active query used by this AR class.
      */
