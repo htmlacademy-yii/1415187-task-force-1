@@ -272,15 +272,29 @@ class User extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query completed tasks for user
+     * Список завершенных заданий исполнителя
      *
-     * @return array|Task[]|\yii\db\ActiveRecord[]
+     * @return array
      */
     public function getCompletedTasksExecutor()
     {
         return $this->getTasksExecutor()
             ->innerJoin(['s' => Status::tableName()], 's.`id` = `task`.status_id')
             ->where(['s.`name`' => Status::STATUS_DONE])
+            ->all();
+    }
+
+    /**
+     * Список исполнителей
+     *
+     * @return array
+     */
+    public static function getExecutors()
+    {
+        return self::find()
+            ->innerJoin(['s' => Specialisation::tableName()], 's.executor_id = `user`.id')
+            ->groupBy('`user`.id')
+            ->orderBy(['date_add' => SORT_DESC])
             ->all();
     }
 }
