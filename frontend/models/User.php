@@ -279,7 +279,8 @@ class User extends \yii\db\ActiveRecord
     public function getCompletedTasksExecutor()
     {
         return $this->getTasksExecutor()
-            ->andFilterWhere(['status_id' => Status::STATUS_DONE])
+            ->innerJoin(['s' => Status::tableName()], 's.`id` = `task`.status_id')
+            ->where(['s.`name`' => Status::STATUS_DONE])
             ->all();
     }
 }

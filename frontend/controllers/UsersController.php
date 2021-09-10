@@ -11,8 +11,9 @@ class UsersController extends Controller
     public function actionIndex()
     {
         $users = User::find()
-            ->orderBy(['date_add' => SORT_DESC])
             ->innerJoin(['s' => Specialisation::tableName()], 's.executor_id = `user`.id')
+            ->groupBy('`user`.id')
+            ->orderBy(['date_add' => SORT_DESC])
             ->all();
 
         return $this->render(
