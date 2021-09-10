@@ -2,7 +2,9 @@
 
 namespace app\models;
 
+use phpDocumentor\Reflection\Types\Expression;
 use Yii;
+use yii\db\Query;
 
 /**
  * This is the model class for table "user".
@@ -11,8 +13,8 @@ use Yii;
  * @property string $email
  * @property string $name
  * @property string $password
- * @property string $date_add Время последней активности на сайте
- * @property string $date_activity
+ * @property string $date_add
+ * @property string $date_activity Время последней активности на сайте
  * @property int $is_visible Показывает/скрывает профиль пользователя. Если пользователь заказчик - скрыть контакты со страницы пользователя. Если пользователь исполнитель - скрыть показ карточки со страницы исполнителей.
  * @property int|null $city_id Идентификатор города из таблицы городов
  * @property string|null $address Адрес пользователя
@@ -109,7 +111,7 @@ class User extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|FavoriteQuery
      */
-    public function getFavorites()
+    public function getFavoritesCustomer()
     {
         return $this->hasMany(Favorite::className(), ['customer_id' => 'id']);
     }
@@ -119,7 +121,7 @@ class User extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|FavoriteQuery
      */
-    public function getFavorites0()
+    public function getFavoritesExecutor()
     {
         return $this->hasMany(Favorite::className(), ['executor_id' => 'id']);
     }
@@ -139,7 +141,7 @@ class User extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|MessageQuery
      */
-    public function getMessages()
+    public function getMessagesReciever()
     {
         return $this->hasMany(Message::className(), ['receiver_id' => 'id']);
     }
@@ -149,7 +151,7 @@ class User extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|MessageQuery
      */
-    public function getMessages0()
+    public function getMessagesSender()
     {
         return $this->hasMany(Message::className(), ['sender_id' => 'id']);
     }
@@ -159,7 +161,7 @@ class User extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|OpinionQuery
      */
-    public function getOpinions()
+    public function getOpinionsCustomer()
     {
         return $this->hasMany(Opinion::className(), ['customer_id' => 'id']);
     }
@@ -169,9 +171,25 @@ class User extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|OpinionQuery
      */
-    public function getOpinions0()
+    public function getOpinionsExecutor()
     {
         return $this->hasMany(Opinion::className(), ['executor_id' => 'id']);
+    }
+
+    /**
+     * Gets query for [[Opinions0]].
+     *
+     * @return array|\yii\db\ActiveRecord
+     * @throws \yii\db\Exception
+     */
+    public function getOpinionsExecutorRate()
+    {
+        $calcRateQuery = new \yii\db\Expression('sum(rate) / count(rate)');
+
+        return $this->hasMany(Opinion::className(), ['executor_id' => 'id'])
+            ->select(['rating' => $calcRateQuery])
+            ->createCommand()
+            ->queryOne();
     }
 
     /**
@@ -209,7 +227,7 @@ class User extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|TaskQuery
      */
-    public function getTasks()
+    public function getTasksCustomer()
     {
         return $this->hasMany(Task::className(), ['customer_id' => 'id']);
     }
@@ -219,7 +237,7 @@ class User extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|TaskQuery
      */
-    public function getTasks0()
+    public function getTasksExecutor()
     {
         return $this->hasMany(Task::className(), ['executor_id' => 'id']);
     }
@@ -235,11 +253,48 @@ class User extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[Specialisation]].
+     *
+     * @return \yii\db\ActiveQuery|SpecialisationQuery
+     */
+    public function getSpecialisation()
+    {
+        return $this->hasMany(Specialisation::className(), ['executor_id' => 'id']);
+    }
+
+    /**
      * {@inheritdoc}
      * @return UserQuery the active query used by this AR class.
      */
     public static function find()
     {
         return new UserQuery(get_called_class());
+    }
+
+    /**
+     * Список завершенных заданий исполнителя
+     *
+     * @return array
+     */
+    public function getCompletedTasksExecutor()
+    {
+        return $this->getTasksExecutor()
+            ->innerJoin(['s' => Status::tableName()], 's.`id` = `task`.status_id')
+            ->where(['s.`name`' => Status::STATUS_DONE])
+            ->all();
+    }
+
+    /**
+     * Список исполнителей
+     *
+     * @return array
+     */
+    public static function getExecutors()
+    {
+        return self::find()
+            ->innerJoin(['s' => Specialisation::tableName()], 's.executor_id = `user`.id')
+            ->groupBy('`user`.id')
+            ->orderBy(['date_add' => SORT_DESC])
+            ->all();
     }
 }
