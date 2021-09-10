@@ -184,8 +184,10 @@ class User extends \yii\db\ActiveRecord
      */
     public function getOpinionsExecutorRate()
     {
+        $calcRateQuery = new \yii\db\Expression('sum(rate) / count(rate)');
+
         return $this->hasMany(Opinion::className(), ['executor_id' => 'id'])
-            ->select(['rating' => new \yii\db\Expression('sum(rate) / count(rate)')])
+            ->select(['rating' => $calcRateQuery])
             ->createCommand()
             ->queryOne();
     }
