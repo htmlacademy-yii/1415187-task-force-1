@@ -4,8 +4,8 @@ namespace M2rk\Taskforce\validators;
 
 use M2rk\Taskforce\exceptions\ActionBaseException;
 use M2rk\Taskforce\exceptions\RoleBaseException;
-use M2rk\Taskforce\models\Task;
-use M2rk\Taskforce\models\User;
+use Taskforce\models\Task;
+use Taskforce\models\User;
 
 class ActionValidator
 {

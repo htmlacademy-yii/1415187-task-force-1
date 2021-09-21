@@ -4,7 +4,7 @@
 namespace M2rk\Taskforce\actions;
 
 
-use M2rk\Taskforce\models\Task;
+use Taskforce\models\Task;
 
 abstract class Action
 {
