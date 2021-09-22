@@ -16,28 +16,28 @@ class TasksController extends Controller
     {
         $filters = new TasksFilter();
         $filters->load(Yii::$app->request->get());
-        $dateFilter = new Expression('now() - ' . ($filters->period ?? 'now()'));
+        $filters->period = !empty($filters->period) ? $filters->period : '1000 year';
+        $dateFilter = new Expression('now() - interval ' . $filters->period);
 
         $tasks = Task::getNewTasks()
             ->andWhere(['>', 'task.date_add', $dateFilter])
             ->andFilterWhere(['task.category_id' => $filters->categories])
-            ->andFilterWhere(['ilike', 'task.name', $filters->search]);
+            ->andFilterWhere(['like', 'task.name', $filters->search]);
 
         if ($filters->remoteWork) {
             $tasks
-                ->andWhere(['task.city' => null]);
+                ->andWhere(['task.city_id' => null]);
         }
 
-        if ($filters->noResponse) {
+        if ($filters->noExecutor) {
             $tasks
-                ->joinWith(Responce::tableName()) // error
-                ->andWhere(['response.id' => null]);
+                ->andWhere(['task.executor_id' => null]);
         }
 
         $pagination = new Pagination(
             [
                 'defaultPageSize' => 5,
-                'totalCount'      => $tasks->count(),
+                'totalCount' => $tasks->count(),
             ]
         );
         $tasks->offset($pagination->offset);
@@ -46,8 +46,8 @@ class TasksController extends Controller
         return $this->render(
             'index',
             [
-                'tasks'      => $tasks->all(),
-                'filters'    => $filters,
+                'tasks' => $tasks->all(),
+                'filters' => $filters,
                 'pagination' => $pagination,
             ]
         );

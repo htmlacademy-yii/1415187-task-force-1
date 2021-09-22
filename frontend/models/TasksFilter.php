@@ -11,10 +11,11 @@ class TasksFilter extends Model
 {
 
     public $categories;
-    public $noResponse;
+    public $noExecutor;
     public $remoteWork;
     public $period;
     public $search;
+    public $additionally;
 
 //    private const AVAILABLE_PERIOD = [
 //        1 => '1 day',
@@ -26,7 +27,7 @@ class TasksFilter extends Model
     {
         return [
             'categories' => 'Категории',
-            'noResponse' => 'Без откликов',
+            'noExecutor' => 'Без исполнителя',
             'remoteWork' => 'Удаленная работа',
             'period' => 'Период',
             'search' => 'Поиск',
@@ -36,7 +37,7 @@ class TasksFilter extends Model
     public function rules(): array
     {
         return [
-            [['categories', 'noResponse', 'remoteWork', 'period', 'search'], 'safe'],
+            [['categories', 'noExecutor', 'remoteWork', 'period', 'search'], 'safe'],
         ];
     }
 }
