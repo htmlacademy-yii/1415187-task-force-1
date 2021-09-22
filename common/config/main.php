@@ -9,5 +9,16 @@ return [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
+//        'urlManager' => [
+//            'enablePrettyUrl' => true,
+//            'showScriptName' => false,
+//            'enableStrictParsing' => false,
+//            'rules' => [
+//                '//' => '/',
+//                'tasks' => 'tasks/index',
+//                'users' => 'users/index',
+//                'users/filter/<filter:\w+>' => 'users/filter'
+//            ]
+//        ],
     ],
 ];

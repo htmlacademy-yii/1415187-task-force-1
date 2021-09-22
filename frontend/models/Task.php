@@ -184,14 +184,13 @@ class Task extends \yii\db\ActiveRecord
     /**
      * Список новых заданий
      *
-     * @return array
+     * @return TaskQuery
      */
     public static function getNewTasks()
     {
         return self::find()
             ->innerJoin(['s' => Status::tableName()], 's.id = `task`.status_id')
             ->orderBy('date_add')
-            ->where(['s.`name`' => Status::STATUS_NEW])
-            ->all();
+            ->where(['s.`name`' => Status::STATUS_NEW]);
     }
 }
