@@ -16,18 +16,18 @@ class TasksFilter extends Model
     public $period;
     public $search;
 
-    private $availablePeriod = [
-        1 => 'day',
-        2 => 'week',
-        3 => 'month',
-    ];
+//    private const AVAILABLE_PERIOD = [
+//        1 => '1 day',
+//        2 => '1 week',
+//        3 => '1 month',
+//    ];
 
     public function attributeLabels(): array
     {
         return [
             'categories' => 'Категории',
-            'no_response' => 'Без откликов',
-            'remote_work' => 'Удаленная работа',
+            'noResponse' => 'Без откликов',
+            'remoteWork' => 'Удаленная работа',
             'period' => 'Период',
             'search' => 'Поиск',
         ];
@@ -38,17 +38,5 @@ class TasksFilter extends Model
         return [
             [['categories', 'noResponse', 'remoteWork', 'period', 'search'], 'safe'],
         ];
-    }
-
-    public function formName(): void
-    {
-
-    }
-
-    public function getPeriodTime($period): string
-    {
-        $date = new DateTime();
-        $date->sub(DateInterval::createFromDateString($this->availablePeriod[$period]));
-        return $date->format('Y-m-d H:i:s');
     }
 }
