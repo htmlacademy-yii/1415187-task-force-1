@@ -287,14 +287,13 @@ class User extends \yii\db\ActiveRecord
     /**
      * Список исполнителей
      *
-     * @return array
+     * @return UserQuery
      */
-    public static function getExecutors()
+    public static function getExecutors(): UserQuery
     {
         return self::find()
             ->innerJoin(['s' => Specialisation::tableName()], 's.executor_id = `user`.id')
             ->groupBy('`user`.id')
-            ->orderBy(['date_add' => SORT_DESC])
-            ->all();
+            ->orderBy(['date_add' => SORT_DESC]);
     }
 }

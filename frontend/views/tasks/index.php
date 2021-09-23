@@ -1,17 +1,19 @@
 <?php
 
-/**
- * @var $tasks      \frontend\controllers\TasksController
- * @var $pagination \yii\data\Pagination
- * @var $filters    \frontend\models\TasksFilter
- */
-
 use backend\helpers\BaseHelper;
-use yii\helpers\ArrayHelper;
+use frontend\controllers\TasksController;
+use frontend\models\TasksFilter;
+use yii\data\Pagination;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\widgets\LinkPager;
 use app\models\Category;
+
+/**
+ * @var $tasks      TasksController
+ * @var $pagination Pagination
+ * @var $filters    TasksFilter
+ */
 
 ?>
 

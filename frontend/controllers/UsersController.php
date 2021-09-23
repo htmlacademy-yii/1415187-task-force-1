@@ -9,10 +9,13 @@ class UsersController extends Controller
 {
     public function actionIndex()
     {
+        $users = User::getExecutors();
+
+
         return $this->render(
             'index',
             [
-                'users' => User::getExecutors(),
+                'users' => $users->all(),
             ]
         );
     }

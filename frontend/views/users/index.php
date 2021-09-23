@@ -16,7 +16,7 @@ use backend\helpers\BaseHelper;
         <div class="content-view__feedback-card user__search-wrapper">
             <div class="feedback-card__top">
                 <div class="user__search-icon">
-                    <a href="user.html"><img src="<?= $user->avatar ?>" width="65" height="65"></a>
+                    <a href="user.html"><?= !empty($user->avatar) ? "<img src=\"<?= $user->avatar ?>\" width=\"65\" height=\"65\">" : ''; ?></a>
                     <span><?= "{$taskCount} " . BaseHelper::get_noun_plural_form($taskCount, 'tasks') ?></span>
                     <span><?= "{$opinionCount} " . BaseHelper::get_noun_plural_form($opinionCount, 'feedbacks') ?></span>
                 </div>
@@ -44,28 +44,45 @@ use backend\helpers\BaseHelper;
         <form class="search-task__form" name="users" method="post" action="#">
             <fieldset class="search-task__categories">
                 <legend>Категории</legend>
-                <input class="visually-hidden checkbox__input" id="101" type="checkbox" name="" value="" checked
-                       disabled>
-                <label for="101">Курьерские услуги </label>
-                <input class="visually-hidden checkbox__input" id="102" type="checkbox" name="" value="" checked>
-                <label for="102">Грузоперевозки </label>
-                <input class="visually-hidden checkbox__input" id="103" type="checkbox" name="" value="">
-                <label for="103">Переводы </label>
-                <input class="visually-hidden checkbox__input" id="104" type="checkbox" name="" value="">
-                <label for="104">Строительство и ремонт </label>
-                <input class="visually-hidden checkbox__input" id="105" type="checkbox" name="" value="">
-                <label for="105">Выгул животных </label>
+                <label class="checkbox__legend">
+                    <input class="visually-hidden checkbox__input" type="checkbox" name="" value="" checked disabled>
+                    <span>Курьерские услуги</span>
+                </label>
+                <label class="checkbox__legend">
+                    <input class="visually-hidden checkbox__input" type="checkbox" name="" value="" checked>
+                    <span>Грузоперевозки</span>
+                </label>
+                <label class="checkbox__legend">
+                    <input class="visually-hidden checkbox__input" type="checkbox" name="" value="">
+                    <span>Переводы</span>
+                </label>
+                <label class="checkbox__legend">
+                    <input class="visually-hidden checkbox__input" type="checkbox" name="" value="">
+                    <span>Строительство и ремонт</span>
+                </label>
+                <label class="checkbox__legend">
+                    <input class="visually-hidden checkbox__input" type="checkbox" name="" value="">
+                    <span>Выгул животных</span>
+                </label>
             </fieldset>
             <fieldset class="search-task__categories">
                 <legend>Дополнительно</legend>
-                <input class="visually-hidden checkbox__input" id="106" type="checkbox" name="" value="" disabled>
-                <label for="106">Сейчас свободен</label>
-                <input class="visually-hidden checkbox__input" id="107" type="checkbox" name="" value="" checked>
-                <label for="107">Сейчас онлайн</label>
-                <input class="visually-hidden checkbox__input" id="108" type="checkbox" name="" value="" checked>
-                <label for="108">Есть отзывы</label>
-                <input class="visually-hidden checkbox__input" id="109" type="checkbox" name="" value="" checked>
-                <label for="109">В избранном</label>
+                <label class="checkbox__legend">
+                    <input class="visually-hidden checkbox__input" type="checkbox" name="" value="">
+                    <span>Сейчас свободен</span>
+                </label>
+                <label class="checkbox__legend">
+                    <input class="visually-hidden checkbox__input" type="checkbox" name="" value="">
+                    <span>Сейчас онлайн</span>
+                </label>
+                <label class="checkbox__legend">
+                    <input class="visually-hidden checkbox__input" type="checkbox" name="" value="">
+                    <span>Есть отзывы</span>
+                </label>
+                <label class="checkbox__legend">
+                    <input class="visually-hidden checkbox__input" type="checkbox" name="" value="">
+                    <span>В избранном</span>
+                </label>
             </fieldset>
             <label class="search-task__name" for="110">Поиск по имени</label>
             <input class="input-middle input" id="110" type="search" name="q" placeholder="">
