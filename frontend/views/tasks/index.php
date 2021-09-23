@@ -42,17 +42,17 @@ use app\models\Category;
 
             <?= LinkPager::widget(
                 [
-                    'pagination' => $pagination,
-                    'options' => [
+                    'pagination'         => $pagination,
+                    'options'            => [
                         'class' => 'new-task__pagination-list',
                     ],
                     'activePageCssClass' => 'pagination__item--current',
-                    'pageCssClass' => 'pagination__item',
-                    'prevPageCssClass' => 'pagination__item',
-                    'nextPageCssClass' => 'pagination__item',
-                    'nextPageLabel' => '⠀',
-                    'prevPageLabel' => '⠀',
-                    'hideOnSinglePage' => true
+                    'pageCssClass'       => 'pagination__item',
+                    'prevPageCssClass'   => 'pagination__item',
+                    'nextPageCssClass'   => 'pagination__item',
+                    'nextPageLabel'      => '⠀',
+                    'prevPageLabel'      => '⠀',
+                    'hideOnSinglePage'   => true
                 ]
             ) ?>
 
@@ -65,10 +65,10 @@ use app\models\Category;
 
         $form = ActiveForm::begin(
             [
-                'id' => 'filter-form',
+                'id'      => 'filter-form',
                 'options' => ['class' => 'search-task__form'],
-                'action' => ['/tasks'],
-                'method' => 'get'
+                'action'  => ['/tasks'],
+                'method'  => 'get'
             ]
         );
 
@@ -77,69 +77,112 @@ use app\models\Category;
         <fieldset class="search-task__categories">
 
             <legend>Категории</legend>
-            <?php echo $form->field($filters, 'categories', [
-                'template' => '{input}',
-                'labelOptions' =>['class' => 'checkbox__legend']
-            ])->checkboxList(Category::getCategories(),
-                ['item' => function ($index, $label, $name, $checked, $value) {
-                    $chek = $checked ? 'checked' : '';
-                    return "<label class=\"checkbox__legend\">
+            <?php echo $form->field(
+                $filters,
+                'categories',
+                [
+                    'template'     => '{input}',
+                    'labelOptions' => ['class' => 'checkbox__legend']
+                ]
+            )->checkboxList(
+                Category::getCategories(),
+                [
+                    'item' => function ($index, $label, $name, $checked, $value) {
+                        $chek = $checked ? 'checked' : '';
+                        return "<label class=\"checkbox__legend\">
                                 <input class=\"visually-hidden checkbox__input\" type=\"checkbox\" name=\"{$name}\" value=\"{$value}\" {$chek}>
                                 <span>{$label}</span>
                             </label>";
-                },
+                    },
                 ]
-            )?>
+            ) ?>
 
         </fieldset>
-
-        // todo
 
         <fieldset class="search-task__categories">
             <legend>Дополнительно</legend>
             <?php
 
-            echo $form->field($filters, 'noExecutor', [
-                'template' => '{input}{label}',
-                'options' => ['class' => ''],
-            ])
-                ->checkbox(['class' => 'visually-hidden checkbox__input', 'uncheck' => false], false);
+            echo $form->field(
+                $filters,
+                'noExecutor',
+                [
+                    'template' => '{input}{label}',
+                    'options'  => ['class' => ''],
+                ]
+            )
+                ->checkbox(
+                    [
+                        'class'        => 'checkbox__input visually-hidden',
+                        'uncheck'      => false,
+                        'label'        => "<span>{$filters->attributeLabels()['noExecutor']}</span>",
+                        'labelOptions' => ['class' => 'checkbox__legend']
+                    ],
+                    true
+                );
 
-            echo $form->field($filters, 'remoteWork', [
-                'template' => '{input}{label}',
-                'options' => ['class' => '']
-            ])
-                ->checkbox(['class' => 'visually-hidden checkbox__input', 'uncheck' => false], false);
+            echo $form->field(
+                $filters,
+                'remoteWork',
+                [
+                    'template' => '{input}{label}',
+                    'options'  => ['class' => ''],
+                ]
+            )
+                ->checkbox(
+                    [
+                        'class'        => 'checkbox__input visually-hidden',
+                        'uncheck'      => false,
+                        'label'        => "<span>{$filters->attributeLabels()['remoteWork']}</span>",
+                        'labelOptions' => ['class' => 'checkbox__legend']
+                    ],
+                    true
+                );
 
             ?>
+
         </fieldset>
 
         <?php
 
-        echo $form->field($filters, 'period', [
-            'template' => '{label}{input}',
-            'options' => ['class' => ''],
-            'labelOptions' => ['class' => 'search-task__name']
-        ])
-            ->dropDownList([
-                '1 day' => 'За день',
-                '1 week' => 'За неделю',
-                '1 month' => 'За месяц',
-            ], [
-                'class' => 'multiple-select input',
-                'style' => 'width: 100%',
-                'prompt' => 'Выберите период'
-            ]);
+        echo $form->field(
+            $filters,
+            'period',
+            [
+                'template'     => '{label}{input}',
+                'options'      => ['class' => ''],
+                'labelOptions' => ['class' => 'search-task__name']
+            ]
+        )
+            ->dropDownList(
+                [
+                    '1 day'   => 'За день',
+                    '1 week'  => 'За неделю',
+                    '1 month' => 'За месяц',
+                ],
+                [
+                    'class'  => 'multiple-select input',
+                    'style'  => 'width: 100%',
+                    'prompt' => 'Выберите период'
+                ]
+            );
 
-        echo $form->field($filters, 'search', [
-            'template' => '{label}{input}',
-            'options' => ['class' => ''],
-            'labelOptions' => ['class' => 'search-task__name']
-        ])
-            ->input('search', [
-                'class' => 'input-middle input',
-                'style' => 'width: 100%'
-            ]);
+        echo $form->field(
+            $filters,
+            'search',
+            [
+                'template'     => '{label}{input}',
+                'options'      => ['class' => ''],
+                'labelOptions' => ['class' => 'search-task__name']
+            ]
+        )
+            ->input(
+                'search',
+                [
+                    'class' => 'input-middle input',
+                    'style' => 'width: 100%'
+                ]
+            );
 
         echo Html::submitButton('Искать', ['class' => 'button']);
 

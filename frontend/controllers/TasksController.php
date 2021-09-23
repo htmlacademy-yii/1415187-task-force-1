@@ -2,7 +2,6 @@
 
 namespace frontend\controllers;
 
-use app\models\Responce;
 use frontend\models\TasksFilter;
 use Yii;
 use yii\data\Pagination;
@@ -37,7 +36,7 @@ class TasksController extends Controller
         $pagination = new Pagination(
             [
                 'defaultPageSize' => 5,
-                'totalCount' => $tasks->count(),
+                'totalCount'      => $tasks->count(),
             ]
         );
         $tasks->offset($pagination->offset);
@@ -46,8 +45,8 @@ class TasksController extends Controller
         return $this->render(
             'index',
             [
-                'tasks' => $tasks->all(),
-                'filters' => $filters,
+                'tasks'      => $tasks->all(),
+                'filters'    => $filters,
                 'pagination' => $pagination,
             ]
         );

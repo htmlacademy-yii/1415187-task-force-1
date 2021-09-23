@@ -1,10 +1,7 @@
 <?php
 
-
 namespace frontend\models;
 
-use DateInterval;
-use DateTime;
 use yii\base\Model;
 
 class TasksFilter extends Model
@@ -15,13 +12,6 @@ class TasksFilter extends Model
     public $remoteWork;
     public $period;
     public $search;
-    public $additionally;
-
-//    private const AVAILABLE_PERIOD = [
-//        1 => '1 day',
-//        2 => '1 week',
-//        3 => '1 month',
-//    ];
 
     public function attributeLabels(): array
     {
@@ -29,8 +19,8 @@ class TasksFilter extends Model
             'categories' => 'Категории',
             'noExecutor' => 'Без исполнителя',
             'remoteWork' => 'Удаленная работа',
-            'period' => 'Период',
-            'search' => 'Поиск',
+            'period'     => 'Период',
+            'search'     => 'Поиск',
         ];
     }
 
