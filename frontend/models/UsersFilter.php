@@ -8,23 +8,23 @@ class UsersFilter extends Model
 {
 
     public $categories;
-    public $free;
+    public $vacant;
     public $online;
     public $hasFeedback;
     public $inFavorites;
     public $search;
-    public $sort;
+    public $sortBy;
 
     public function attributeLabels(): array
     {
         return [
-            'categories'  => 'Категории',
-            'free'        => 'Сейчас свободен',
-            'online'      => 'Сейчас онлайн',
+            'categories' => 'Категории',
+            'free' => 'Сейчас свободен',
+            'online' => 'Сейчас онлайн',
             'hasFeedback' => 'Есть отзывы',
             'inFavorites' => 'В избранном',
-            'search'      => 'Поиск по имени',
-            'sort'        => 'Сортировать по',
+            'search' => 'Поиск по имени',
+            'sort' => 'Сортировать по',
         ];
     }
 
@@ -34,4 +34,5 @@ class UsersFilter extends Model
             [['categories', 'free', 'online', 'hasFeedback', 'inFavorites', 'search', 'sort'], 'safe'],
         ];
     }
+
 }

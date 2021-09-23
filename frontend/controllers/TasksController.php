@@ -15,7 +15,7 @@ class TasksController extends Controller
     {
         $filters = new TasksFilter();
         $filters->load(Yii::$app->request->get());
-        $filters->period = !empty($filters->period) ? $filters->period : '1000 year';
+        $filters->period = !empty($filters->period) ? $filters->period : '100 year';
         $dateFilter = new Expression('now() - interval ' . $filters->period);
 
         $tasks = Task::getNewTasks()
