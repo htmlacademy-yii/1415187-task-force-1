@@ -3,15 +3,17 @@
  * @var $this    yii\web\View
  * @var $users   UsersController
  * @var $filters UsersFilter
+ * @var $pagination Pagination
  */
 
 use app\models\Category;
 use backend\helpers\BaseHelper;
 use frontend\controllers\UsersController;
 use frontend\models\UsersFilter;
-use yii\helpers\ArrayHelper;
+use yii\data\Pagination;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\widgets\LinkPager;
 
 ?>
 
@@ -49,6 +51,27 @@ use yii\widgets\ActiveForm;
             </div>
         </div>
     <?php endforeach; ?>
+
+    <div class="new-task__pagination">
+
+        <?= LinkPager::widget(
+            [
+                'pagination'         => $pagination,
+                'options'            => [
+                    'class' => 'new-task__pagination-list',
+                ],
+                'activePageCssClass' => 'pagination__item--current',
+                'pageCssClass'       => 'pagination__item',
+                'prevPageCssClass'   => 'pagination__item',
+                'nextPageCssClass'   => 'pagination__item',
+                'nextPageLabel'      => '⠀',
+                'prevPageLabel'      => '⠀',
+                'hideOnSinglePage'   => true
+            ]
+        ) ?>
+
+    </div>
+
 </section>
 
 <section class="search-task">

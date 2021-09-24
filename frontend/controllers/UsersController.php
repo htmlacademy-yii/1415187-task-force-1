@@ -19,7 +19,7 @@ class UsersController extends Controller
 
         $pagination = new Pagination(
             [
-                'defaultPageSize' => 5,
+                'defaultPageSize' => 10,
                 'totalCount'      => $users->count(),
             ]
         );

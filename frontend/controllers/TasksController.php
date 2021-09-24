@@ -21,7 +21,7 @@ class TasksController extends Controller
 
         $pagination = new Pagination(
             [
-                'defaultPageSize' => 5,
+                'defaultPageSize' => 10,
                 'totalCount'      => $tasks->count(),
             ]
         );
