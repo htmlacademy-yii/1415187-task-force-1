@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "task".
@@ -186,11 +187,34 @@ class Task extends \yii\db\ActiveRecord
      *
      * @return TaskQuery
      */
-    public static function getNewTasks()
+    public static function getNewTasks($filters)
     {
-        return self::find()
+        $filters->period = !empty($filters->period) ? $filters->period : '100 year';
+        $dateFilter = new Expression('now() - interval ' . $filters->period);
+
+        $tasks = self::find()
             ->innerJoin(['s' => Status::tableName()], 's.id = `task`.status_id')
             ->orderBy('date_add')
-            ->where(['s.`name`' => Status::STATUS_NEW]);
+            ->where(
+                [
+                    'and',
+                    ['s.`name`' => Status::STATUS_NEW],
+                    ['>', 'task.date_add', $dateFilter]
+                ]
+            )
+            ->andFilterWhere(['task.category_id' => $filters->categories])
+            ->andFilterWhere(['like', 'task.name', $filters->search]);
+
+        if ($filters->remoteWork) {
+            $tasks
+                ->andWhere(['task.city_id' => null]);
+        }
+
+        if ($filters->noExecutor) {
+            $tasks
+                ->andWhere(['task.executor_id' => null]);
+        }
+
+        return $tasks;
     }
 }

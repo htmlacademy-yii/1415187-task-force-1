@@ -2,9 +2,8 @@
 
 namespace app\models;
 
-use phpDocumentor\Reflection\Types\Expression;
+use yii\db\Expression;
 use Yii;
-use yii\db\Query;
 
 /**
  * This is the model class for table "user".
@@ -289,11 +288,36 @@ class User extends \yii\db\ActiveRecord
      *
      * @return UserQuery
      */
-    public static function getExecutors(): UserQuery
+    public static function getExecutors($filters): UserQuery
     {
-        return self::find()
+        $users = self::find()
             ->innerJoin(['s' => Specialisation::tableName()], 's.executor_id = `user`.id')
+            ->joinWith('opinionsExecutor')
+            ->andFilterWhere(['s.category_id' => $filters->categories])
+            ->andFilterWhere(['like', 'name', $filters->search])
             ->groupBy('`user`.id')
             ->orderBy(['date_add' => SORT_DESC]);
+
+        if ($filters->vacant) {
+            $users->JoinWith('tasksExecutor')
+                ->andWhere(['or', ['task.id' => null], ['task.status_id' => Status::STATUS_DONE]]);
+        }
+
+        if ($filters->online) {
+            $onlineExpression = new Expression('now() - interval 5 minute');
+            $users->where(['>', '`user`.date_activity', $onlineExpression]);
+        }
+
+        if ($filters->hasFeedback) {
+            $users->joinWith('opinionsExecutor');
+            $users->andWhere(['is not', 'opinion.customer_id', null]);
+        }
+
+        if ($filters->inFavorites) {
+            $users->joinWith('favoritesExecutor');
+            $users->andWhere(['is not', 'favorite.customer_id', null]);
+        }
+
+        return $users;
     }
 }

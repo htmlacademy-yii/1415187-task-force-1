@@ -1,7 +1,7 @@
 <?php
 /**
- * @var $this  yii\web\View
- * @var $users UsersController
+ * @var $this    yii\web\View
+ * @var $users   UsersController
  * @var $filters UsersFilter
  */
 
@@ -25,7 +25,10 @@ use yii\widgets\ActiveForm;
                 <div class="user__search-icon">
                     <a href="user.html"><?= !empty($user->avatar) ? "<img src=\"<?= $user->avatar ?>\" width=\"65\" height=\"65\">" : ''; ?></a>
                     <span><?= "{$taskCount} " . BaseHelper::get_noun_plural_form($taskCount, 'tasks') ?></span>
-                    <span><?= "{$opinionCount} " . BaseHelper::get_noun_plural_form($opinionCount, 'feedbacks') ?></span>
+                    <span><?= "{$opinionCount} " . BaseHelper::get_noun_plural_form(
+                            $opinionCount,
+                            'feedbacks'
+                        ) ?></span>
                 </div>
                 <div class="feedback-card__top--name user__search-card">
                     <p class="link-name"><a href="user.html" class="link-regular"><?= $user->name ?></a></p>
@@ -35,7 +38,9 @@ use yii\widgets\ActiveForm;
                         <?= $user->about ?>
                     </p>
                 </div>
-                <span class="new-task__time">Был на сайте <?= BaseHelper::time_difference($user->date_activity) ?> назад</span>
+                <span class="new-task__time">Был на сайте <?= BaseHelper::time_difference(
+                        $user->date_activity
+                    ) ?> назад</span>
             </div>
             <div class="link-specialization user__search-link--bottom">
                 <?php foreach ($user->specialisation as $spec): ?>
@@ -49,66 +54,149 @@ use yii\widgets\ActiveForm;
 <section class="search-task">
     <div class="search-task__wrapper">
 
-        <?php $form = ActiveForm::begin([
-            'id' => 'TaskForm',
-            'fieldConfig' => [
-                'options' => [
-                    'tag' => false,
-                ],
-            ],
-            'options' => ['class' => 'search-task__form']
-        ]);
+        <?php
+
+        $form = ActiveForm::begin(
+            [
+                'id'      => 'filter-form',
+                'options' => ['class' => 'search-task__form'],
+                'action'  => ['/users'],
+                'method'  => 'get'
+            ]
+        );
+
         ?>
 
         <fieldset class="search-task__categories">
             <legend>Категории</legend>
 
-            <?php echo $form->field($filters, 'categories', [
-                'template' => '{input}',
-                'labelOptions' => ['class' => 'checkbox__legend']
-            ])->checkboxList(Category::getCategories(),
-                ['item' => function ($index, $label, $name, $checked, $value) {
-                    $chek = $checked ? 'checked' : "";
-                    return "<label class=\"checkbox__legend\">
+            <?php echo $form->field(
+                $filters,
+                'categories',
+                [
+                    'template'     => '{input}',
+                    'labelOptions' => ['class' => 'checkbox__legend']
+                ]
+            )->checkboxList(
+                Category::getCategories(),
+                [
+                    'item' => function ($index, $label, $name, $checked, $value) {
+                        $chek = $checked ? 'checked' : "";
+                        return "<label class=\"checkbox__legend\">
                                 <input class=\"visually-hidden checkbox__input\" type=\"checkbox\" name=\"{$name}\" value=\"{$value}\" {$chek}>
                                 <span>{$label}</span>
                             </label>";
-                },
+                    },
                 ]
             ) ?>
 
         </fieldset>
 
 
+        <fieldset class="search-task__categories">
+            <legend>Дополнительно</legend>
+            <?php
 
+            echo $form->field(
+                $filters,
+                'vacant',
+                [
+                    'template' => '{input}{label}',
+                    'options'  => ['class' => ''],
+                ]
+            )
+                ->checkbox(
+                    [
+                        'class'        => 'checkbox__input visually-hidden',
+                        'uncheck'      => false,
+                        'label'        => "<span>{$filters->attributeLabels()['vacant']}</span>",
+                        'labelOptions' => ['class' => 'checkbox__legend']
+                    ],
+                    true
+                );
 
+            echo $form->field(
+                $filters,
+                'online',
+                [
+                    'template' => '{input}{label}',
+                    'options'  => ['class' => ''],
+                ]
+            )
+                ->checkbox(
+                    [
+                        'class'        => 'checkbox__input visually-hidden',
+                        'uncheck'      => false,
+                        'label'        => "<span>{$filters->attributeLabels()['online']}</span>",
+                        'labelOptions' => ['class' => 'checkbox__legend']
+                    ],
+                    true
+                );
 
+            echo $form->field(
+                $filters,
+                'hasFeedback',
+                [
+                    'template' => '{input}{label}',
+                    'options'  => ['class' => ''],
+                ]
+            )
+                ->checkbox(
+                    [
+                        'class'        => 'checkbox__input visually-hidden',
+                        'uncheck'      => false,
+                        'label'        => "<span>{$filters->attributeLabels()['hasFeedback']}</span>",
+                        'labelOptions' => ['class' => 'checkbox__legend']
+                    ],
+                    true
+                );
 
+            echo $form->field(
+                $filters,
+                'inFavorites',
+                [
+                    'template' => '{input}{label}',
+                    'options'  => ['class' => ''],
+                ]
+            )
+                ->checkbox(
+                    [
+                        'class'        => 'checkbox__input visually-hidden',
+                        'uncheck'      => false,
+                        'label'        => "<span>{$filters->attributeLabels()['inFavorites']}</span>",
+                        'labelOptions' => ['class' => 'checkbox__legend']
+                    ],
+                    true
+                );
 
+            ?>
 
-<!--        <fieldset class="search-task__categories">-->
-<!--            <legend>Дополнительно</legend>-->
-<!--            --><?php //echo $form->field($filters, 'additionally', ['template' => '{input}'])
-//                ->checkboxList(['free' => 'Сейчас свободен', 'online' => 'Сейчас онлайн', 'rew' => 'Есть отзывы', 'fav' => 'В избранном'],
-//                    ['item' => function ($index, $label, $name, $checked, $value) {
-//                        $chek = $checked ? 'checked' : "";
-//                        return '<div><label class="checkbox__legend">'
-//                            . '<input class="visually-hidden checkbox__input" type="checkbox" name="' . $name . '" value="' . $value . '" ' . $chek . '>'
-//                            . '<span>' . $label . '</span>'
-//                            . '</label></div>';
-//                    },
-//                    ]
-//                ); ?>
-<!--        </fieldset>-->
+        </fieldset>
 
-        <?php echo $form->field($filters, 'search', [
-            'labelOptions' => ['class' => 'search-task__name'],
-            'template' => '{label} {input}',
-        ])->textInput(['class' => 'input-middle input'])->label('Поиск по имени');
+        <?php
+
+        echo $form->field(
+            $filters,
+            'search',
+            [
+                'template'     => '{label}{input}',
+                'options'      => ['class' => ''],
+                'labelOptions' => ['class' => 'search-task__name']
+            ]
+        )
+            ->input(
+                'search',
+                [
+                    'class' => 'input-middle input',
+                    'style' => 'width: 100%'
+                ]
+            );
+
+        echo Html::submitButton('Искать', ['class' => 'button']);
+
+        $form = ActiveForm::end();
+
         ?>
-
-        <?php echo Html::submitButton('Искать', ['class' => 'button']) ?>
-        <?php $form = ActiveForm::end(); ?>
 
     </div>
 </section>
