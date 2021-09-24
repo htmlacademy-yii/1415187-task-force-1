@@ -84,6 +84,10 @@ class Category extends \yii\db\ActiveRecord
      */
     public static function getCategories()
     {
-        return self::find()->select(['name', 'icon', 'id'])->orderBy(['name' => SORT_ASC])->indexBy('id')->column();
+        return self::find()
+            ->select(['name', 'icon', 'id'])
+            ->orderBy(['name' => SORT_ASC])
+            ->indexBy('id')
+            ->column();
     }
 }
