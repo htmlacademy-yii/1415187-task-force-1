@@ -44,8 +44,11 @@ class UsersController extends Controller
      */
     public function actionView($id): string
     {
-        $user = User::getExecutors()
-            ->andWhere(['id' => $id]);
+        $user = User::findOne($id);
+
+        if (empty($user->specialisations ?? null)) {
+            $user = null;
+        }
 
         if (!$user) {
             throw new NotFoundHttpException('Исполнитель не найден, проверьте правильность введенных данных', 404);

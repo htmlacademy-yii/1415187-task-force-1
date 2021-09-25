@@ -25,7 +25,7 @@ use yii\widgets\LinkPager;
         <div class="content-view__feedback-card user__search-wrapper">
             <div class="feedback-card__top">
                 <div class="user__search-icon">
-                    <a href="/user/<?= $user->id ?>"><?= !empty($user->avatar) ? "<img src=\"<?= $user->avatar ?>\" width=\"65\" height=\"65\">" : ''; ?></a>
+                    <a href="/user/view/<?= $user->id ?>"><?= !empty($user->avatar) ? "<img src=\"<?= $user->avatar ?>\" width=\"65\" height=\"65\">" : ''; ?></a>
                     <span><?= "{$taskCount} " . BaseHelper::get_noun_plural_form($taskCount, 'tasks') ?></span>
                     <span><?= "{$opinionCount} " . BaseHelper::get_noun_plural_form(
                             $opinionCount,
@@ -33,7 +33,7 @@ use yii\widgets\LinkPager;
                         ) ?></span>
                 </div>
                 <div class="feedback-card__top--name user__search-card">
-                    <p class="link-name"><a href="/user/<?= $user->id ?>" class="link-regular"><?= $user->name ?></a></p>
+                    <p class="link-name"><a href="/user/view/<?= $user->id ?>" class="link-regular"><?= $user->name ?></a></p>
                     <span <?= $rating < 0.5 ? 'class="star-disabled"' : '' ?>></span><span <?= $rating < 1.5 ? 'class="star-disabled"' : '' ?>></span><span <?= $rating < 2.5 ? 'class="star-disabled"' : '' ?>></span><span <?= $rating < 3.5 ? 'class="star-disabled"' : '' ?>></span><span <?= $rating < 4.5 ? 'class="star-disabled"' : '' ?>></span>
                     <b><?= $rating ?></b>
                     <p class="user__search-content">

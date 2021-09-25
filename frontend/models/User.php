@@ -320,4 +320,42 @@ class User extends \yii\db\ActiveRecord
 
         return $users;
     }
+
+    /**
+     * Исполнитель по id
+     *
+     * @return UserQuery
+     */
+    public static function getExecutor($filters = null): UserQuery
+    {
+        $users = self::find()
+            ->innerJoin(['s' => Specialisation::tableName()], 's.executor_id = `user`.id')
+            ->joinWith('opinionsExecutor')
+            ->andFilterWhere(['s.category_id' => $filters->categories ?? null])
+            ->andFilterWhere(['like', 'name', $filters->search ?? null])
+            ->groupBy('`user`.id')
+            ->orderBy(['date_add' => SORT_DESC]);
+
+        if ($filters->vacant ?? null) {
+            $users->JoinWith('tasksExecutor')
+                ->andWhere(['or', ['task.id' => null], ['task.status_id' => Status::STATUS_DONE]]);
+        }
+
+        if ($filters->online ?? null) {
+            $onlineExpression = new Expression('now() - interval 5 minute');
+            $users->where(['>', '`user`.date_activity', $onlineExpression]);
+        }
+
+        if ($filters->hasFeedback ?? null) {
+            $users->joinWith('opinionsExecutor');
+            $users->andWhere(['is not', 'opinion.customer_id', null]);
+        }
+
+        if ($filters->inFavorites ?? null) {
+            $users->joinWith('favoritesExecutor');
+            $users->andWhere(['is not', 'favorite.customer_id', null]);
+        }
+
+        return $users;
+    }
 }

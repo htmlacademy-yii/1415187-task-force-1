@@ -8,8 +8,8 @@ use app\models\User;
 use backend\helpers\BaseHelper;
 
 $rating = round($user->opinionsExecutorRate['rating'], 2);
-$taskCount = count($user->getTasksExecutor());
-$opinionCount = count($user->getOpinionsExecutor());
+$taskCount = count($user->getTasksExecutor()->all());
+$opinionCount = count($user->getOpinionsExecutor()->all());
 
 ?>
 
@@ -58,6 +58,16 @@ $opinionCount = count($user->getOpinionsExecutor());
                 <a href="#"><img src="./img/rome-photo.jpg" width="85" height="86" alt="Фото работы"></a>
                 <a href="#"><img src="./img/smartphone-photo.png" width="85" height="86" alt="Фото работы"></a>
                 <a href="#"><img src="./img/dotonbori-photo.png" width="85" height="86" alt="Фото работы"></a>
+                <div class="new-task__pagination">
+                    <ul class="new-task__pagination-list">
+                        <li class="pagination__item"><a href="#"></a></li>
+                        <li class="pagination__item pagination__item--current">
+                            <a>1</a></li>
+                        <li class="pagination__item"><a href="#">2</a></li>
+                        <li class="pagination__item"><a href="#">3</a></li>
+                        <li class="pagination__item"><a href="#"></a></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

@@ -41,10 +41,11 @@ return [
             'showScriptName' => false,
             'enableStrictParsing' => true,
             'rules' => [
+                '/' => '/',
                 'tasks' => 'tasks/index',
                 'users' => 'users/index',
-                'task/<id:\d+>' => 'tasks/view',
-                'user/<id:\d+>' => 'users/view',
+                'task/view/<id:\d+>' => 'tasks/view',
+                'user/view/<id:\d+>' => 'users/view',
             ],
         ],
     ],
