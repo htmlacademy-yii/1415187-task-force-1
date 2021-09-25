@@ -83,7 +83,6 @@ use yii\widgets\LinkPager;
             [
                 'id'      => 'filter-form',
                 'options' => ['class' => 'search-task__form'],
-                'action'  => ['/users'],
                 'method'  => 'get'
             ]
         );

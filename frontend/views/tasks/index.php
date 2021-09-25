@@ -69,7 +69,6 @@ use app\models\Category;
             [
                 'id'      => 'filter-form',
                 'options' => ['class' => 'search-task__form'],
-                'action'  => ['/tasks'],
                 'method'  => 'get'
             ]
         );
