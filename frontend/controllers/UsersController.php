@@ -7,10 +7,11 @@ use Yii;
 use yii\data\Pagination;
 use yii\web\Controller;
 use app\models\User;
+use yii\web\NotFoundHttpException;
 
 class UsersController extends Controller
 {
-    public function actionIndex()
+    public function actionIndex(): string
     {
         $filters = new UsersFilter();
         $filters->load(Yii::$app->request->get());
@@ -30,10 +31,27 @@ class UsersController extends Controller
         return $this->render(
             'index',
             [
+                'title' => '',
                 'users'      => $users->all(),
                 'filters'    => $filters,
                 'pagination' => $pagination,
             ]
         );
+    }
+
+    /**
+     * @throws NotFoundHttpException
+     */
+    public function actionView($id): string
+    {
+        $user = User::findOne($id);
+
+        if (!$user) {
+            throw new NotFoundHttpException('Пользователь не найден, проверьте правильность введенных данных', 404);
+        }
+
+        return $this->render('view', [
+            'user' => $user
+        ]);
     }
 }

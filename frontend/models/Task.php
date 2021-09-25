@@ -20,6 +20,7 @@ use yii\db\Expression;
  * @property string|null $address
  * @property int|null $city_id Идентификатор города из таблицы городов
  * @property string|null $expire Срок исполнения задания
+ * @property string|null $address_comment
  *
  * @property Category $category
  * @property City $city
@@ -53,7 +54,7 @@ class Task extends \yii\db\ActiveRecord
             [['price'], 'number'],
             [['date_add', 'expire'], 'safe'],
             [['name'], 'string', 'max' => 128],
-            [['address'], 'string', 'max' => 255],
+            [['address', 'address_comment'], 'string', 'max' => 255],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['category_id' => 'id']],
             [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => City::className(), 'targetAttribute' => ['city_id' => 'id']],
             [['customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['customer_id' => 'id']],
@@ -77,9 +78,10 @@ class Task extends \yii\db\ActiveRecord
             'customer_id' => Yii::t('app', 'Идентификатор заказчика из таблицы пользователей'),
             'date_add' => Yii::t('app', 'Date Add'),
             'executor_id' => Yii::t('app', 'Идентификатор исполнителя из таблицы пользователей'),
-            'address' => Yii::t('app', 'Address'),
+            'address' => Yii::t('app', 'Адресс'),
             'city_id' => Yii::t('app', 'Идентификатор города из таблицы городов'),
             'expire' => Yii::t('app', 'Срок исполнения задания'),
+            'address_comment' => Yii::t('app', 'Комментарий к адресу'),
         ];
     }
 
