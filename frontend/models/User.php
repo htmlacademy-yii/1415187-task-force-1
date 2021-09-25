@@ -36,8 +36,8 @@ use Yii;
  * @property Portfolio[] $portfolios
  * @property Responce[] $responces
  * @property Specialisation[] $specialisations
- * @property Task[] $tasks
- * @property Task[] $tasks0
+ * @property Task[] $tasksUser
+ * @property Task[] $tasksExecutor
  * @property UserNotification[] $userNotifications
  */
 class User extends \yii\db\ActiveRecord
@@ -222,7 +222,7 @@ class User extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Tasks]].
+     * Gets query for [[TasksUser]].
      *
      * @return \yii\db\ActiveQuery|TaskQuery
      */
@@ -232,7 +232,7 @@ class User extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Tasks0]].
+     * Gets query for [[TasksExecutor]].
      *
      * @return \yii\db\ActiveQuery|TaskQuery
      */
@@ -288,32 +288,32 @@ class User extends \yii\db\ActiveRecord
      *
      * @return UserQuery
      */
-    public static function getExecutors($filters): UserQuery
+    public static function getExecutors($filters = null): UserQuery
     {
         $users = self::find()
             ->innerJoin(['s' => Specialisation::tableName()], 's.executor_id = `user`.id')
             ->joinWith('opinionsExecutor')
-            ->andFilterWhere(['s.category_id' => $filters->categories])
-            ->andFilterWhere(['like', 'name', $filters->search])
+            ->andFilterWhere(['s.category_id' => $filters->categories ?? null])
+            ->andFilterWhere(['like', 'name', $filters->search ?? null])
             ->groupBy('`user`.id')
             ->orderBy(['date_add' => SORT_DESC]);
 
-        if ($filters->vacant) {
+        if ($filters->vacant ?? null) {
             $users->JoinWith('tasksExecutor')
                 ->andWhere(['or', ['task.id' => null], ['task.status_id' => Status::STATUS_DONE]]);
         }
 
-        if ($filters->online) {
+        if ($filters->online ?? null) {
             $onlineExpression = new Expression('now() - interval 5 minute');
             $users->where(['>', '`user`.date_activity', $onlineExpression]);
         }
 
-        if ($filters->hasFeedback) {
+        if ($filters->hasFeedback ?? null) {
             $users->joinWith('opinionsExecutor');
             $users->andWhere(['is not', 'opinion.customer_id', null]);
         }
 
-        if ($filters->inFavorites) {
+        if ($filters->inFavorites ?? null) {
             $users->joinWith('favoritesExecutor');
             $users->andWhere(['is not', 'favorite.customer_id', null]);
         }
