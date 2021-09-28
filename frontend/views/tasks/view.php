@@ -114,7 +114,7 @@ $taskCount = $task->customer->getTasksCustomer()->count();
                 </div>
             </div>
             <p class="info-customer"><span><?= "{$taskCount} " . BaseHelper::get_noun_plural_form($taskCount, 'tasks') ?></span><span class="last-"><?= BaseHelper::time_difference($task->customer->date_add) ?> на сайте</span></p>
-            <a href="/user/view/<?= $task->customer->id ?>" class="link-regular">Смотреть профиль</a>
+<!--            <a href="/user/view/--><!--" class="link-regular">Смотреть профиль</a>-->
         </div>
     </div>
     <div id="chat-container">

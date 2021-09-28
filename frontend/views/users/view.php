@@ -108,30 +108,30 @@ $taskCount = count($user->getTasksExecutor()->all());
                             </p>
                         </div>
                         <div class="card__review-rate">
-                            <p class="five-rate big-rate"><?= $feedback['rate'] ?><span></span></p>
+                            <p class="<?= $feedback['rate'] > 3 ? 'five-rate' : 'three-rate' ?> big-rate"><?= $feedback['rate'] ?><span></span></p>
                         </div>
                     </div>
                 </div>
             <?php endforeach; ?>
-            <div class="new-task__pagination">
+        </div>
+        <div class="new-task__pagination">
 
-                <?= LinkPager::widget(
-                    [
-                        'pagination'         => $paginationComment,
-                        'options'            => [
-                            'class' => 'new-task__pagination-list',
-                        ],
-                        'activePageCssClass' => 'pagination__item--current',
-                        'pageCssClass'       => 'pagination__item',
-                        'prevPageCssClass'   => 'pagination__item',
-                        'nextPageCssClass'   => 'pagination__item',
-                        'nextPageLabel'      => '⠀',
-                        'prevPageLabel'      => '⠀',
-                        'hideOnSinglePage'   => true
-                    ]
-                ) ?>
+            <?= LinkPager::widget(
+                [
+                    'pagination'         => $paginationComment,
+                    'options'            => [
+                        'class' => 'new-task__pagination-list',
+                    ],
+                    'activePageCssClass' => 'pagination__item--current',
+                    'pageCssClass'       => 'pagination__item',
+                    'prevPageCssClass'   => 'pagination__item',
+                    'nextPageCssClass'   => 'pagination__item',
+                    'nextPageLabel'      => '⠀',
+                    'prevPageLabel'      => '⠀',
+                    'hideOnSinglePage'   => true
+                ]
+            ) ?>
 
-            </div>
         </div>
     </div>
 </section>
