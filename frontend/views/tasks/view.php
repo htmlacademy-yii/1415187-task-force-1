@@ -7,6 +7,8 @@
 use app\models\Task;
 use backend\helpers\BaseHelper;
 
+$taskCount = $task->customer->getTasksCustomer()->count();
+
 ?>
 
 <section class="content-view">
@@ -96,5 +98,27 @@ use backend\helpers\BaseHelper;
             <?php endforeach; ?>
 
         </div>
+    </div>
+</section>
+
+<section class="connect-desk">
+    <div class="connect-desk__profile-mini">
+        <div class="profile-mini__wrapper">
+            <h3>Заказчик</h3>
+            <div class="profile-mini__top">
+                <?php if (!empty($task->customer->avatar)): ?>
+                <img src="<?= $task->customer->avatar ?>" width="62" height="62" alt="Аватар заказчика">
+                <?php endif; ?>
+                <div class="profile-mini__name five-stars__rate">
+                    <p><?= $task->customer->name ?></p>
+                </div>
+            </div>
+            <p class="info-customer"><span><?= "{$taskCount} " . BaseHelper::get_noun_plural_form($taskCount, 'tasks') ?></span><span class="last-"><?= BaseHelper::time_difference($task->customer->date_add) ?> на сайте</span></p>
+            <a href="/user/view/<?= $task->customer->id ?>" class="link-regular">Смотреть профиль</a>
+        </div>
+    </div>
+    <div id="chat-container">
+        <!--                    добавьте сюда атрибут task с указанием в нем id текущего задания-->
+        <chat class="connect-desk__chat"></chat>
     </div>
 </section>
