@@ -54,8 +54,36 @@ class UsersController extends Controller
             throw new NotFoundHttpException('Исполнитель не найден, проверьте правильность введенных данных', 404);
         }
 
+        $paginationPhoto = new Pagination(
+            [
+                'defaultPageSize' => 3,
+                'totalCount'      => count($user->portfolios),
+            ]
+        );
+
+        $paginationComment = new Pagination(
+            [
+                'defaultPageSize' => 5,
+                'totalCount'      => User::getAllExecutorRate($id)['count'],
+            ]
+        );
+
+        $feedbacks = User::getExecutorOpinionsAndFeedbacks($user->id)
+            ->offset($paginationComment->offset)
+            ->limit($paginationComment->limit)
+            ->all();
+
+        $portfolios = $user->getPortfolios()
+            ->offset($paginationComment->offset)
+            ->limit($paginationComment->limit)
+            ->all();
+
         return $this->render('view', [
-            'user' => $user
+            'user' => $user,
+            'feedbacks' => $feedbacks,
+            'portfolios' => $portfolios,
+            'paginationPhoto' => $paginationPhoto,
+            'paginationComment' => $paginationComment,
         ]);
     }
 }

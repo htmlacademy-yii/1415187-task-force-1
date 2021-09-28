@@ -7,6 +7,7 @@
  */
 
 use app\models\Category;
+use app\models\User;
 use backend\helpers\BaseHelper;
 use frontend\controllers\UsersController;
 use frontend\models\UsersFilter;
@@ -20,15 +21,15 @@ use yii\widgets\LinkPager;
 <section class="user__search">
     <?php foreach ($users as $user):
         $taskCount = count($user->completedTasksExecutor);
-        $opinionCount = count($user->opinionsExecutor);
-        $rating = round($user->opinionsExecutorRate['rating'], 2); ?>
+        $rate = User::getAllExecutorRate($user->id);
+        $rating = round($rate['rate'], 2); ?>
         <div class="content-view__feedback-card user__search-wrapper">
             <div class="feedback-card__top">
                 <div class="user__search-icon">
                     <a href="/user/view/<?= $user->id ?>"><?= !empty($user->avatar) ? "<img src=\"<?= $user->avatar ?>\" width=\"65\" height=\"65\">" : ''; ?></a>
                     <span><?= "{$taskCount} " . BaseHelper::get_noun_plural_form($taskCount, 'tasks') ?></span>
-                    <span><?= "{$opinionCount} " . BaseHelper::get_noun_plural_form(
-                            $opinionCount,
+                    <span><?= "{$rate['count']} " . BaseHelper::get_noun_plural_form(
+                            $rate['count'],
                             'feedbacks'
                         ) ?></span>
                 </div>

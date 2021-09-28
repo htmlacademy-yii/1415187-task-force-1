@@ -4,6 +4,7 @@ namespace app\models;
 
 use yii\db\Expression;
 use Yii;
+use yii\db\Query;
 
 /**
  * This is the model class for table "user".
@@ -26,13 +27,14 @@ use Yii;
  * @property int $is_deleted
  *
  * @property City $city
- * @property Favorite[] $favorites
- * @property Favorite[] $favorites0
+ * @property Favorite[] $favoritesCustomer
+ * @property Favorite[] $favoritesExecutor
  * @property Feedback[] $feedbacks
- * @property Message[] $messages
- * @property Message[] $messages0
- * @property Opinion[] $opinions
- * @property Opinion[] $opinions0
+ * @property Message[] $messagesReceiver
+ * @property Message[] $messagesSender
+ * @property Opinion[] $opinionsCustomer
+ * @property Opinion[] $opinionsExecutor
+ * @property Opinion[] $opinionsExecutorRate
  * @property Portfolio[] $portfolios
  * @property Responce[] $responces
  * @property Specialisation[] $specialisations
@@ -106,7 +108,7 @@ class User extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Favorites]].
+     * Gets query for [[FavoritesCustomer]].
      *
      * @return \yii\db\ActiveQuery|FavoriteQuery
      */
@@ -116,7 +118,7 @@ class User extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Favorites0]].
+     * Gets query for [[FavoritesExecutor]].
      *
      * @return \yii\db\ActiveQuery|FavoriteQuery
      */
@@ -136,17 +138,17 @@ class User extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Messages]].
+     * Gets query for [[MessagesReceiver]].
      *
      * @return \yii\db\ActiveQuery|MessageQuery
      */
-    public function getMessagesReciever()
+    public function getMessagesReceiver()
     {
         return $this->hasMany(Message::className(), ['receiver_id' => 'id']);
     }
 
     /**
-     * Gets query for [[Messages0]].
+     * Gets query for [[MessagesSender]].
      *
      * @return \yii\db\ActiveQuery|MessageQuery
      */
@@ -156,7 +158,7 @@ class User extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Opinions]].
+     * Gets query for [[OpinionsCustomer]].
      *
      * @return \yii\db\ActiveQuery|OpinionQuery
      */
@@ -166,7 +168,7 @@ class User extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Opinions0]].
+     * Gets query for [[OpinionsExecutor]].
      *
      * @return \yii\db\ActiveQuery|OpinionQuery
      */
@@ -176,7 +178,7 @@ class User extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[Opinions0]].
+     * Gets query for [[OpinionsExecutorRate]].
      *
      * @return array|\yii\db\ActiveRecord
      * @throws \yii\db\Exception
@@ -187,6 +189,73 @@ class User extends \yii\db\ActiveRecord
 
         return $this->hasMany(Opinion::className(), ['executor_id' => 'id'])
             ->select(['rating' => $calcRateQuery])
+            ->createCommand()
+            ->queryOne();
+    }
+
+    /**
+     * Gets query for [[ExecutorOpinionsAndFeedbacks]].
+     *
+     * @return Query
+     * @throws \yii\db\Exception
+     */
+    public static function getExecutorOpinionsAndFeedbacks($id): Query
+    {
+        $opinionsQuery = (new Query())
+            ->select(
+                [
+                    'o.customer_id',
+                    'task_id' => new Expression('null'),
+                    'o.executor_id',
+                    'o.rate',
+                    'o.created_at',
+                    'o.description'
+                ]
+            )
+            ->from(['o' => Opinion::tableName()])
+            ->where(['o.executor_id' => $id]);
+
+        $feedbacksQuery = (new Query())
+            ->select(
+                [
+                    'customer_id' => 'u.id',
+                    'f.task_id',
+                    'f.executor_id',
+                    'f.rate',
+                    'f.created_at',
+                    'f.description'
+                ]
+            )
+            ->from(['f' => Feedback::tableName()])
+            ->innerJoin(['t' => Task::tableName()], 't.id = f.task_id')
+            ->innerJoin(['u' => User::tableName()], 'u.id = t.customer_id')
+            ->where(['f.executor_id' => $id]);
+
+        return (new Query())
+            ->from($feedbacksQuery->union($opinionsQuery))
+            ->orderBy(['created_at' => SORT_DESC]);
+    }
+
+    /**
+     * Gets query for [[OpinionsExecutorRate]].
+     *
+     * @return array
+     * @throws \yii\db\Exception
+     */
+    public static function getAllExecutorRate($id): array
+    {
+        $allFeedbackQuery = self::getExecutorOpinionsAndFeedbacks($id);
+        $rateQuery = new Expression('coalesce(sum(rate), 0) / coalesce(nullif(count(rate), 0), 1)');
+        $countQuery = new Expression('count(rate)');
+
+        return (new Query())
+            ->select(
+                [
+                    'rate'  => $rateQuery,
+                    'count' => $countQuery
+                ]
+            )
+            ->from(['temp_table' => $allFeedbackQuery])
             ->createCommand()
             ->queryOne();
     }

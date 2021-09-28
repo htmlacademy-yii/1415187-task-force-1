@@ -1,22 +1,31 @@
 <?php
 
 /**
- * @var $user      User
+ * @var $user                 User
+ * @var $feedbacks            array
+ * @var $portfolios           array
+ * @var $paginationPhoto      Pagination
+ * @var $paginationComment    Pagination
  */
 
+use app\models\Task;
 use app\models\User;
 use backend\helpers\BaseHelper;
+use yii\data\Pagination;
+use yii\widgets\LinkPager;
 
-$rating = round($user->opinionsExecutorRate['rating'], 2);
+$rate = User::getAllExecutorRate($user->id);
+$rating = round($rate['rate'], 2);
 $taskCount = count($user->getTasksExecutor()->all());
-$opinionCount = count($user->getOpinionsExecutor()->all());
 
 ?>
 
 <section class="content-view">
     <div class="user__card-wrapper">
         <div class="user__card">
+            <?php if (!empty($user->avatar)): ?>
             <img src="<?= $user->avatar ?>" width="120" height="120" alt="Аватар пользователя">
+            <?php endif; ?>
             <div class="content-view__headline">
                 <h1><?= $user->name ?></h1>
                 <p>Россия, <?= $user->city->name ?>, <?= BaseHelper::time_difference($user->birthday) ?></p>
@@ -25,13 +34,13 @@ $opinionCount = count($user->getOpinionsExecutor()->all());
                     <b><?= $rating ?></b>
                 </div>
                 <b class="done-task">Выполнил <?= "{$taskCount} " . BaseHelper::get_noun_plural_form($taskCount, 'tasks') ?></b><b
-                        class="done-review">Получил <?= "{$opinionCount} " . BaseHelper::get_noun_plural_form(
-                        $opinionCount,
+                        class="done-review">Получил <?= "{$rate['count']} " . BaseHelper::get_noun_plural_form(
+                        $rate['count'],
                         'feedbacks'
                     ) ?></b>
             </div>
             <div class="content-view__headline user__card-bookmark user__card-bookmark--current">
-                <span>Был на сайте <?= BaseHelper::time_difference($user->date_activity) ?> минут назад</span>
+                <span>Был на сайте <?= BaseHelper::time_difference($user->date_activity) ?> назад</span>
                 <a href="#"><b></b></a>
             </div>
         </div>
@@ -55,57 +64,73 @@ $opinionCount = count($user->getOpinionsExecutor()->all());
             </div>
             <div class="user__card-photo">
                 <h3 class="content-view__h3">Фото работ</h3>
-                <a href="#"><img src="./img/rome-photo.jpg" width="85" height="86" alt="Фото работы"></a>
-                <a href="#"><img src="./img/smartphone-photo.png" width="85" height="86" alt="Фото работы"></a>
-                <a href="#"><img src="./img/dotonbori-photo.png" width="85" height="86" alt="Фото работы"></a>
+                <?php foreach ($portfolios as $portfolio): ?>
+                <a href="<?= $portfolio['filepath'] ?>"><img src="<?= $portfolio['filepath'] ?>" width="85" height="86" alt="Фото работы"></a>
+                <?php endforeach; ?>
                 <div class="new-task__pagination">
-                    <ul class="new-task__pagination-list">
-                        <li class="pagination__item"><a href="#"></a></li>
-                        <li class="pagination__item pagination__item--current">
-                            <a>1</a></li>
-                        <li class="pagination__item"><a href="#">2</a></li>
-                        <li class="pagination__item"><a href="#">3</a></li>
-                        <li class="pagination__item"><a href="#"></a></li>
-                    </ul>
+
+                    <?= LinkPager::widget(
+                        [
+                            'pagination'         => $paginationPhoto,
+                            'options'            => [
+                                'class' => 'new-task__pagination-list',
+                            ],
+                            'activePageCssClass' => 'pagination__item--current',
+                            'pageCssClass'       => 'pagination__item',
+                            'prevPageCssClass'   => 'pagination__item',
+                            'nextPageCssClass'   => 'pagination__item',
+                            'nextPageLabel'      => '⠀',
+                            'prevPageLabel'      => '⠀',
+                            'hideOnSinglePage'   => true
+                        ]
+                    ) ?>
+
                 </div>
             </div>
         </div>
     </div>
     <div class="content-view__feedback">
-        <h2>Отзывы<span>(2)</span></h2>
+        <h2>Отзывы<span>(<?= $rate['count'] ?>)</span></h2>
         <div class="content-view__feedback-wrapper reviews-wrapper">
-            <div class="feedback-card__reviews">
-                <p class="link-task link">Задание <a href="view.html" class="link-regular">«Выгулять моего боевого
-                        петуха»</a></p>
-                <div class="card__review">
-                    <a href="#"><img src="./img/man-glasses.jpg" width="55" height="54"></a>
-                    <div class="feedback-card__reviews-content">
-                        <p class="link-name link"><a href="#" class="link-regular">Астахов Павел</a></p>
-                        <p class="review-text">
-                            Кумар сделал всё в лучшем виде. Буду обращаться к нему в будущем, если
-                            возникнет такая необходимость!
-                        </p>
-                    </div>
-                    <div class="card__review-rate">
-                        <p class="five-rate big-rate">5<span></span></p>
-                    </div>
-                </div>
-            </div>
-            <div class="feedback-card__reviews">
-                <p class="link-task link">Задание <a href="view.html" class="link-regular">«Повесить полочку»</a></p>
-                <div class="card__review">
-                    <a href="#"><img src="./img/woman-glasses.jpg" width="55" height="54"></a>
-                    <div class="feedback-card__reviews-content">
-                        <p class="link-name link"><a href="#" class="link-regular">Морозова Евгения</a></p>
-                        <p class="review-text">
-                            Кумар приехал позже, чем общал и не привез с собой всех
-                            инстументов. В итоге пришлось еще ходить в строительный магазин.
-                        </p>
-                    </div>
-                    <div class="card__review-rate">
-                        <p class="three-rate big-rate">3<span></span></p>
+            <?php foreach ($feedbacks as $feedback):
+                $task = Task::findOne($feedback['task_id']);
+                $customer = User::findOne($feedback['customer_id']); ?>
+                <div class="feedback-card__reviews">
+                    <p class="link-task link"><?= (!empty($task)) ? "Задание <a href=\"/task/view/{$task->id}\" class=\"link-regular\">«{$task->name}»</a>" : '' ?></p>
+                    <div class="card__review">
+                        <?php if (!empty($customer->avatar)): ?>
+                            <a href="<?= $customer->avatar ?>"><img src="<?= $customer->avatar ?>" width="55" height="54" alt="Аватар пользователя"></a>
+                        <?php endif; ?>
+                        <div class="feedback-card__reviews-content">
+                            <p class="link-name link"><a href="/user/view/<?= $customer->id ?>" class="link-regular"><?= $customer->name ?></a></p>
+                            <p class="review-text">
+                                <?= $feedback['description'] ?>
+                            </p>
+                        </div>
+                        <div class="card__review-rate">
+                            <p class="five-rate big-rate"><?= $feedback['rate'] ?><span></span></p>
+                        </div>
                     </div>
                 </div>
+            <?php endforeach; ?>
+            <div class="new-task__pagination">
+
+                <?= LinkPager::widget(
+                    [
+                        'pagination'         => $paginationComment,
+                        'options'            => [
+                            'class' => 'new-task__pagination-list',
+                        ],
+                        'activePageCssClass' => 'pagination__item--current',
+                        'pageCssClass'       => 'pagination__item',
+                        'prevPageCssClass'   => 'pagination__item',
+                        'nextPageCssClass'   => 'pagination__item',
+                        'nextPageLabel'      => '⠀',
+                        'prevPageLabel'      => '⠀',
+                        'hideOnSinglePage'   => true
+                    ]
+                ) ?>
+
             </div>
         </div>
     </div>
