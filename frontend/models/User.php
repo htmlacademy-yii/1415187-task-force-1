@@ -199,7 +199,7 @@ class User extends \yii\db\ActiveRecord
      * @return Query
      * @throws \yii\db\Exception
      */
-    public static function getExecutorOpinionsAndFeedbacks($id): Query
+    public static function getExecutorOpinionsAndFeedbacks($id, $pagination = null): Query
     {
         $opinionsQuery = (new Query())
             ->select(
@@ -231,9 +231,17 @@ class User extends \yii\db\ActiveRecord
             ->innerJoin(['u' => User::tableName()], 'u.id = t.customer_id')
             ->where(['f.executor_id' => $id]);
 
-        return (new Query())
+        $comments = (new Query())
             ->from($feedbacksQuery->union($opinionsQuery))
             ->orderBy(['created_at' => SORT_DESC]);
+
+        if ($pagination) {
+            $comments
+                ->offset($pagination->offset)
+                ->limit($pagination->limit);
+        }
+
+        return $comments;
     }
 
     /**
@@ -265,9 +273,17 @@ class User extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|PortfolioQuery
      */
-    public function getPortfolios()
+    public function getPortfolios($pagination = null)
     {
-        return $this->hasMany(Portfolio::className(), ['user_id' => 'id']);
+        $portfolios =  $this->hasMany(Portfolio::className(), ['user_id' => 'id']);
+
+        if ($pagination) {
+            $portfolios
+                ->offset($pagination->offset)
+                ->limit($pagination->limit);
+        }
+
+        return $portfolios;
     }
 
     /**

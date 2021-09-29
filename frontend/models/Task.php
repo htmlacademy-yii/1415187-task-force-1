@@ -189,7 +189,7 @@ class Task extends \yii\db\ActiveRecord
      *
      * @return TaskQuery
      */
-    public static function getNewTasks($filters)
+    public static function getNewTasks($filters, $pagination = null)
     {
         $filters->period = !empty($filters->period) ? $filters->period : '100 year';
         $dateFilter = new Expression('now() - interval ' . $filters->period);
@@ -215,6 +215,12 @@ class Task extends \yii\db\ActiveRecord
         if ($filters->noExecutor) {
             $tasks
                 ->andWhere(['task.executor_id' => null]);
+        }
+
+        if ($pagination) {
+            $tasks
+                ->offset($pagination->offset)
+                ->limit($pagination->limit);
         }
 
         return $tasks;

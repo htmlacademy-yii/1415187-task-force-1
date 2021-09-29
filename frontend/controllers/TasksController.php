@@ -12,18 +12,17 @@ use yii\web\NotFoundHttpException;
 
 class TasksController extends Controller
 {
+    private const DEFAULT_TASKS_PAGINATION = 10;
 
     public function actionIndex(): string
     {
         $filters = new TasksFilter();
         $filters->load(Yii::$app->request->get());
-
         $tasks = Task::getNewTasks($filters);
-
 
         $pagination = new Pagination(
             [
-                'defaultPageSize' => 10,
+                'defaultPageSize' => self::DEFAULT_TASKS_PAGINATION,
                 'totalCount'      => $tasks->count(),
             ]
         );
@@ -47,9 +46,7 @@ class TasksController extends Controller
     public function actionView($id): string
     {
 
-        $task = Task::find()
-            ->where(['id' => $id])
-            ->one();
+        $task = Task::findOne($id);
 
         if (empty($task)) {
             throw new NotFoundHttpException('Задание не найдено, проверьте правильность введенных данных', 404);

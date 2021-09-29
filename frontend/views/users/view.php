@@ -2,6 +2,8 @@
 
 /**
  * @var $user                 User
+ * @var $rate                 array
+ * @var $taskCount            int
  * @var $feedbacks            array
  * @var $portfolios           array
  * @var $paginationPhoto      Pagination
@@ -12,20 +14,19 @@ use app\models\Task;
 use app\models\User;
 use backend\helpers\BaseHelper;
 use yii\data\Pagination;
+use yii\helpers\Url;
 use yii\widgets\LinkPager;
 
-$rate = User::getAllExecutorRate($user->id);
 $rating = round($rate['rate'], 2);
-$taskCount = count($user->getTasksExecutor()->all());
 
 ?>
 
 <section class="content-view">
     <div class="user__card-wrapper">
         <div class="user__card">
-            <?php if (!empty($user->avatar)): ?>
+            <?php if (!empty($user->avatar)) { ?>
             <img src="<?= $user->avatar ?>" width="120" height="120" alt="Аватар пользователя">
-            <?php endif; ?>
+            <?php } ?>
             <div class="content-view__headline">
                 <h1><?= $user->name ?></h1>
                 <p>Россия, <?= $user->city->name ?>, <?= BaseHelper::time_difference($user->birthday) ?></p>
@@ -51,22 +52,22 @@ $taskCount = count($user->getTasksExecutor()->all());
             <div class="user__card-info">
                 <h3 class="content-view__h3">Специализации</h3>
                 <div class="link-specialization">
-                    <?php foreach ($user->specialisation as $spec): ?>
+                    <?php foreach ($user->specialisation as $spec) { ?>
                         <a href="browse.html" class="link-regular"><?= $spec->category->name ?></a>
-                    <?php endforeach; ?>
+                    <?php } ?>
                 </div>
                 <h3 class="content-view__h3">Контакты</h3>
                 <div class="user__card-link">
-                    <a class="user__card-link--tel link-regular" href="#"><?= $user->phone ?></a>
-                    <a class="user__card-link--email link-regular" href="#"><?= $user->email ?></a>
-                    <a class="user__card-link--skype link-regular" href="#"><?= $user->name ?></a>
+                    <a class="user__card-link--tel link-regular" href="tel:+<?= $user->phone ?>"><?= $user->phone ?></a>
+                    <a class="user__card-link--email link-regular" href="mailto:<?= $user->email ?>"><?= $user->email ?></a>
+                    <a class="user__card-link--skype link-regular" href="skype:+<?= $user->skype ?>"><?= $user->name ?></a>
                 </div>
             </div>
             <div class="user__card-photo">
                 <h3 class="content-view__h3">Фото работ</h3>
-                <?php foreach ($portfolios as $portfolio): ?>
+                <?php foreach ($portfolios as $portfolio) { ?>
                 <a href="<?= $portfolio['filepath'] ?>"><img src="<?= $portfolio['filepath'] ?>" width="85" height="86" alt="Фото работы"></a>
-                <?php endforeach; ?>
+                <?php } ?>
                 <div class="new-task__pagination">
 
                     <?= LinkPager::widget(
@@ -92,17 +93,19 @@ $taskCount = count($user->getTasksExecutor()->all());
     <div class="content-view__feedback">
         <h2>Отзывы<span>(<?= $rate['count'] ?>)</span></h2>
         <div class="content-view__feedback-wrapper reviews-wrapper">
-            <?php foreach ($feedbacks as $feedback):
+            <?php foreach ($feedbacks as $feedback) {
                 $task = Task::findOne($feedback['task_id']);
                 $customer = User::findOne($feedback['customer_id']); ?>
                 <div class="feedback-card__reviews">
-                    <p class="link-task link"><?= (!empty($task)) ? "Задание <a href=\"/task/view/{$task->id}\" class=\"link-regular\">«{$task->name}»</a>" : '' ?></p>
+                    <p class="link-task link"><?= (!empty($task)) ? "Задание <a href=\" " . Url::to(
+                                ['tasks/view', 'id' => $task->id]
+                            ) . "\" class=\"link-regular\">«{$task->name}»</a>" : '' ?></p>
                     <div class="card__review">
-                        <?php if (!empty($customer->avatar)): ?>
+                        <?php if (!empty($customer->avatar)) { ?>
                             <a href="<?= $customer->avatar ?>"><img src="<?= $customer->avatar ?>" width="55" height="54" alt="Аватар пользователя"></a>
-                        <?php endif; ?>
+                        <?php } ?>
                         <div class="feedback-card__reviews-content">
-                            <p class="link-name link"><a href="/user/view/<?= $customer->id ?>" class="link-regular"><?= $customer->name ?></a></p>
+                            <p class="link-name link"><!--<a href="/user/view/<?php //$customer->id ?>" class="link-regular"> --><?= $customer->name ?></a></p>
                             <p class="review-text">
                                 <?= $feedback['description'] ?>
                             </p>
@@ -112,7 +115,7 @@ $taskCount = count($user->getTasksExecutor()->all());
                         </div>
                     </div>
                 </div>
-            <?php endforeach; ?>
+            <?php } ?>
         </div>
         <div class="new-task__pagination">
 

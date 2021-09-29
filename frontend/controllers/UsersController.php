@@ -11,6 +11,9 @@ use yii\web\NotFoundHttpException;
 
 class UsersController extends Controller
 {
+    private const DEFAULT_PORTFOLIO_PAGINATION = 3;
+    private const DEFAULT_COMMENT_PAGINATION = 5;
+
     public function actionIndex(): string
     {
         $filters = new UsersFilter();
@@ -54,34 +57,32 @@ class UsersController extends Controller
             throw new NotFoundHttpException('Исполнитель не найден, проверьте правильность введенных данных', 404);
         }
 
+        $rate = User::getAllExecutorRate($id);
+        $taskCount = count($user->getTasksExecutor()->all());
+
         $paginationPhoto = new Pagination(
             [
-                'defaultPageSize' => 3,
+                'defaultPageSize' => self::DEFAULT_PORTFOLIO_PAGINATION,
                 'totalCount'      => count($user->portfolios),
             ]
         );
 
         $paginationComment = new Pagination(
             [
-                'defaultPageSize' => 5,
-                'totalCount'      => User::getAllExecutorRate($id)['count'],
+                'defaultPageSize' => self::DEFAULT_COMMENT_PAGINATION,
+                'totalCount'      => $rate['count'],
             ]
         );
 
-        $feedbacks = User::getExecutorOpinionsAndFeedbacks($user->id)
-            ->offset($paginationComment->offset)
-            ->limit($paginationComment->limit)
-            ->all();
-
-        $portfolios = $user->getPortfolios()
-            ->offset($paginationComment->offset)
-            ->limit($paginationComment->limit)
-            ->all();
+        $feedbacks = User::getExecutorOpinionsAndFeedbacks($user->id, $paginationComment);
+        $portfolios = $user->getPortfolios($paginationPhoto);
 
         return $this->render('view', [
             'user' => $user,
-            'feedbacks' => $feedbacks,
-            'portfolios' => $portfolios,
+            'rate' => $rate,
+            'taskCount' => $taskCount,
+            'feedbacks' => $feedbacks->all(),
+            'portfolios' => $portfolios->all(),
             'paginationPhoto' => $paginationPhoto,
             'paginationComment' => $paginationComment,
         ]);

@@ -6,6 +6,7 @@
 
 use app\models\Task;
 use backend\helpers\BaseHelper;
+use yii\helpers\Url;
 
 $taskCount = $task->customer->getTasksCustomer()->count();
 
@@ -18,7 +19,9 @@ $taskCount = $task->customer->getTasksCustomer()->count();
                 <div class="content-view__headline">
                     <h1><?= $task->name ?></h1>
                     <span>Размещено в категории <a href="browse.html"
-                                                   class="link-regular"><?= $task->category->name ?></a> <?= BaseHelper::time_difference($task->date_add) ?> назад</span>
+                                                   class="link-regular"><?= $task->category->name ?></a> <?= BaseHelper::time_difference(
+                            $task->date_add
+                        ) ?> назад</span>
                 </div>
                 <b class="new-task__price new-task__price--clean content-view-price"><?= $task->price ?><b> ₽</b></b>
                 <div class="new-task__icon new-task__icon--clean content-view-icon"></div>
@@ -67,20 +70,23 @@ $taskCount = $task->customer->getTasksCustomer()->count();
         <h2>Отклики <span>(<?= count($task->responces) ?>)</span></h2>
         <div class="content-view__feedback-wrapper">
 
-            <?php foreach ($task->responces as $response):
+            <?php foreach ($task->responces as $response) {
                 $rating = round($task->executor->opinionsExecutorRate['rating'], 2); ?>
                 <div class="content-view__feedback-card">
                     <div class="feedback-card__top">
-                        <a href="/user/<?= $response->executor_id ?>">
+                        <a href="<?= Url::to(['users/view', 'id' => $response->executor_id]) ?>">
                             <?php if (!empty($response->executor->avatar)): ?>
-                                <img src="<?= $response->executor->avatar ?>" width="55" height="55"></a>
-                            <?php endif; ?>
+                            <img src="<?= $response->executor->avatar ?>" width="55" height="55"></a>
+                        <?php endif; ?>
                         <div class="feedback-card__top--name">
-                            <p><a href="/user/<?= $response->executor_id ?>" class="link-regular"><?= $response->executor->name ?></a></p>
+                            <p><a href="<?= Url::to(['users/view', 'id' => $response->executor_id]) ?>"
+                                  class="link-regular"><?= $response->executor->name ?></a></p>
                             <span <?= $rating < 0.5 ? 'class="star-disabled"' : '' ?>></span><span <?= $rating < 1.5 ? 'class="star-disabled"' : '' ?>></span><span <?= $rating < 2.5 ? 'class="star-disabled"' : '' ?>></span><span <?= $rating < 3.5 ? 'class="star-disabled"' : '' ?>></span><span <?= $rating < 4.5 ? 'class="star-disabled"' : '' ?>></span>
                             <b><?= $rating ?></b>
                         </div>
-                        <span class="new-task__time"><?= BaseHelper::time_difference($response->executor->date_activity) ?> назад</span>
+                        <span class="new-task__time"><?= BaseHelper::time_difference(
+                                $response->executor->date_activity
+                            ) ?> назад</span>
                     </div>
                     <div class="feedback-card__content">
                         <p>
@@ -95,7 +101,7 @@ $taskCount = $task->customer->getTasksCustomer()->count();
                            type="button">Отказать</a>
                     </div>
                 </div>
-            <?php endforeach; ?>
+            <?php } ?>
 
         </div>
     </div>
@@ -106,15 +112,19 @@ $taskCount = $task->customer->getTasksCustomer()->count();
         <div class="profile-mini__wrapper">
             <h3>Заказчик</h3>
             <div class="profile-mini__top">
-                <?php if (!empty($task->customer->avatar)): ?>
-                <img src="<?= $task->customer->avatar ?>" width="62" height="62" alt="Аватар заказчика">
-                <?php endif; ?>
+                <?php if (!empty($task->customer->avatar)) { ?>
+                    <img src="<?= $task->customer->avatar ?>" width="62" height="62" alt="Аватар заказчика">
+                <?php } ?>
                 <div class="profile-mini__name five-stars__rate">
                     <p><?= $task->customer->name ?></p>
                 </div>
             </div>
-            <p class="info-customer"><span><?= "{$taskCount} " . BaseHelper::get_noun_plural_form($taskCount, 'tasks') ?></span><span class="last-"><?= BaseHelper::time_difference($task->customer->date_add) ?> на сайте</span></p>
-<!--            <a href="/user/view/--><!--" class="link-regular">Смотреть профиль</a>-->
+            <p class="info-customer"><span><?= "{$taskCount} " . BaseHelper::get_noun_plural_form(
+                        $taskCount,
+                        'tasks'
+                    ) ?></span><span class="last-"><?= BaseHelper::time_difference($task->customer->date_add) ?> на сайте</span>
+            </p>
+            <!--            <a href="/user/view/--><!--" class="link-regular">Смотреть профиль</a>-->
         </div>
     </div>
     <div id="chat-container">
