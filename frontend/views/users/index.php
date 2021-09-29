@@ -1,39 +1,44 @@
 <?php
 /**
- * @var $this    yii\web\View
- * @var $users   UsersController
- * @var $filters UsersFilter
+ * @var $this       yii\web\View
+ * @var $users      UsersController
+ * @var $filters    UsersFilter
  * @var $pagination Pagination
  */
 
 use app\models\Category;
+use app\models\User;
 use backend\helpers\BaseHelper;
 use frontend\controllers\UsersController;
 use frontend\models\UsersFilter;
 use yii\data\Pagination;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\widgets\LinkPager;
 
 ?>
 
 <section class="user__search">
-    <?php foreach ($users as $user):
+    <?php foreach ($users as $user) {
         $taskCount = count($user->completedTasksExecutor);
-        $opinionCount = count($user->opinionsExecutor);
-        $rating = round($user->opinionsExecutorRate['rating'], 2); ?>
+        $rate = User::getAllExecutorRate($user->id);
+        $rating = round($rate['rate'], 2); ?>
         <div class="content-view__feedback-card user__search-wrapper">
             <div class="feedback-card__top">
                 <div class="user__search-icon">
-                    <a href="user.html"><?= !empty($user->avatar) ? "<img src=\"<?= $user->avatar ?>\" width=\"65\" height=\"65\">" : ''; ?></a>
+                    <a href="<?= Url::to(
+                        ['users/view', 'id' => $user->id]
+                    ) ?>"><?= !empty($user->avatar) ? "<img src=\"<?= $user->avatar ?>\" width=\"65\" height=\"65\">" : ''; ?></a>
                     <span><?= "{$taskCount} " . BaseHelper::get_noun_plural_form($taskCount, 'tasks') ?></span>
-                    <span><?= "{$opinionCount} " . BaseHelper::get_noun_plural_form(
-                            $opinionCount,
+                    <span><?= "{$rate['count']} " . BaseHelper::get_noun_plural_form(
+                            $rate['count'],
                             'feedbacks'
                         ) ?></span>
                 </div>
                 <div class="feedback-card__top--name user__search-card">
-                    <p class="link-name"><a href="user.html" class="link-regular"><?= $user->name ?></a></p>
+                    <p class="link-name"><a href="<?= Url::to(['users/view', 'id' => $user->id]) ?>"
+                                            class="link-regular"><?= $user->name ?></a></p>
                     <span <?= $rating < 0.5 ? 'class="star-disabled"' : '' ?>></span><span <?= $rating < 1.5 ? 'class="star-disabled"' : '' ?>></span><span <?= $rating < 2.5 ? 'class="star-disabled"' : '' ?>></span><span <?= $rating < 3.5 ? 'class="star-disabled"' : '' ?>></span><span <?= $rating < 4.5 ? 'class="star-disabled"' : '' ?>></span>
                     <b><?= $rating ?></b>
                     <p class="user__search-content">
@@ -45,12 +50,12 @@ use yii\widgets\LinkPager;
                     ) ?> назад</span>
             </div>
             <div class="link-specialization user__search-link--bottom">
-                <?php foreach ($user->specialisation as $spec): ?>
+                <?php foreach ($user->specialisation as $spec) { ?>
                     <a href="browse.html" class="link-regular"><?= $spec->category->name ?></a>
-                <?php endforeach; ?>
+                <?php } ?>
             </div>
         </div>
-    <?php endforeach; ?>
+    <?php } ?>
 
     <div class="new-task__pagination">
 

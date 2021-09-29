@@ -5,6 +5,7 @@ use frontend\controllers\TasksController;
 use frontend\models\TasksFilter;
 use yii\data\Pagination;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\widgets\LinkPager;
 use app\models\Category;
@@ -21,10 +22,10 @@ use app\models\Category;
     <div class="new-task__wrapper">
         <h1>Новые задания</h1>
 
-        <?php foreach ($tasks as $task): ?>
+        <?php foreach ($tasks as $task) { ?>
             <div class="new-task__card">
                 <div class="new-task__title">
-                    <a href="#" class="link-regular"><h2><?= $task->name ?></h2></a>
+                    <a href="<?= Url::to(['tasks/view', 'id' => $task->id]) ?>" class="link-regular"><h2><?= $task->name ?></h2></a>
                     <a class="new-task__type link-regular" href="#"><p><?= $task->category->name ?></p></a>
                 </div>
                 <div class="new-task__icon new-task__icon--<?= $task->category->icon ?>"></div>
@@ -38,7 +39,7 @@ use app\models\Category;
                     ) ?></p>
                 <span class="new-task__time"><?= BaseHelper::time_difference($task->date_add) ?> назад</span>
             </div>
-        <?php endforeach; ?>
+        <?php } ?>
 
         <div class="new-task__pagination">
 
