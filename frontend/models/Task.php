@@ -225,4 +225,17 @@ class Task extends \yii\db\ActiveRecord
 
         return $tasks;
     }
+
+    /**
+     * Список новых заданий
+     *
+     * @return TaskQuery
+     */
+    public static function getLastNewTasks($limit = 1)
+    {
+        return self::find()
+            ->orderBy(['date_add' => SORT_DESC])
+            ->where(['status' => Status::STATUS_NEW])
+            ->limit($limit);
+    }
 }
