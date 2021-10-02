@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use app\models\Status;
 use yii\web\Controller;
 use app\models\Task;
 
@@ -14,7 +15,7 @@ class LandingController extends Controller
 
     public function actionIndex(): string
     {
-        $tasks = Task::getLastNewTasks(self::DEFAULT_LAST_TASKS)->all();
+        $tasks = Task::getLastTasks(self::DEFAULT_LAST_TASKS, Status::STATUS_NEW)->all();
 
         return $this->renderPartial('index', ['tasks' => $tasks]);
     }

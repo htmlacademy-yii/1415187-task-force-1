@@ -90,18 +90,18 @@ AppAsset::register($this);
                 <?php
                 echo Menu::widget(
                     [
-                        'items'          => [
+                        'items' => [
                             ['label' => 'Задания', 'url' => ['tasks/']],
                             ['label' => 'Исполнители', 'url' => ['users/']],
                             ['label' => 'Создать задание', 'url' => ['']],
                             ['label' => 'Мой профиль', 'url' => ['']],
                         ],
-                        'options'        => [
+                        'options' => [
                             'class' => 'header-nav__list site-list',
                         ],
                         'activeCssClass' => 'site-list__item--active',
-                        'encodeLabels'   => 'false',
-                        'itemOptions'    => ['class' => 'site-list__item',]
+                        'encodeLabels' => 'false',
+                        'itemOptions' => ['class' => 'site-list__item',]
                     ]
                 );
                 ?>
@@ -197,6 +197,20 @@ AppAsset::register($this);
                     </li>
                 </ul>
             </div>
+            <?php if (!empty($this->title) && ($this->title === 'Регистрация')) { ?>
+                <div class="clipart-woman">
+                    <img src="./img/clipart-woman.png" width="238" height="450">
+                </div>
+                <div class="clipart-message">
+                    <div class="clipart-message-text">
+                        <h2>Знаете ли вы, что?</h2>
+                        <p>После регистрации вам будет доступно более
+                            двух тысяч заданий из двадцати разных категорий.</p>
+                        <p>В среднем, наши исполнители зарабатывают
+                            от 500 рублей в час.</p>
+                    </div>
+                </div>
+            <?php } ?>
             <div class="page-footer__copyright">
                 <a>
                     <img class="copyright-logo"

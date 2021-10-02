@@ -2,40 +2,30 @@
 
 namespace frontend\controllers;
 
-use frontend\models\SignUp;
+use app\models\City;
+use frontend\models\SignupForm;
 use yii\web\Controller;
-use yii\web\Response;
-use yii\widgets\ActiveForm;
 
 
 /**
  * Registration controller
  */
-class SignUpController extends Controller
+class SignupController extends Controller
 {
-
-    /**
-     * Регистрация пользователя.
-     *
-     * @return mixed
-     */
     public function actionIndex()
     {
-        $signUpForm = new SignUp();
+        $signUp = new SignupForm();
 
-        if (\Yii::$app->request->getIsPost()) {
-            $signUpForm->load(\Yii::$app->request->post());
-
-            if (\Yii::$app->request->isAjax) {
-                \Yii::$app->response->format = Response::FORMAT_JSON;
-                return ActiveForm::validate($signUpForm);
-            }
-
-            if ($signUpForm->validate()) {
-                // TODO
-            }
+        if ($signUp->load(\Yii::$app->request->post()) && $signUp->validate()) {
+            $signUp->signup();
+            return $this->goHome();
         }
 
-        return $this->render('index', ['userRegisterForm' => $signUpForm]);
+        $city = City::getCities();
+
+        return $this->render('index', [
+            'city' => $city,
+            'signupForm' => $signUp
+        ]);
     }
 }
