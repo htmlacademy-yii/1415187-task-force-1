@@ -12,6 +12,9 @@ use yii\widgets\ActiveForm;
 
 $this->title = 'Регистрация';
 
+$session = Yii::$app->session;
+$session->set('isSignup', true);
+
 ?>
 
 <div class="main-container page-container">

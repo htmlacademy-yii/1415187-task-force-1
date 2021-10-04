@@ -15,8 +15,11 @@ use common\widgets\Alert;
 use yii\widgets\Menu;
 
 AppAsset::register($this);
-?>
-<?php $this->beginPage() ?>
+
+$session = Yii::$app->session;
+$isSignup = $session->get('isSignup');
+
+$this->beginPage() ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>">
 <head>
@@ -197,7 +200,7 @@ AppAsset::register($this);
                     </li>
                 </ul>
             </div>
-            <?php if (!empty($this->title) && ($this->title === 'Регистрация')) { ?>
+            <?php if ($isSignup) { ?>
                 <div class="clipart-woman">
                     <img src="./img/clipart-woman.png" width="238" height="450">
                 </div>
@@ -210,7 +213,10 @@ AppAsset::register($this);
                             от 500 рублей в час.</p>
                     </div>
                 </div>
-            <?php } ?>
+                <?php
+                $session->remove('isSignup');
+            }
+            ?>
             <div class="page-footer__copyright">
                 <a>
                     <img class="copyright-logo"

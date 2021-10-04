@@ -72,10 +72,6 @@ class SignupForm extends Model
         $user->city_id = $this->city;
         $user->password = Yii::$app->security->generatePasswordHash($this->password);
 
-//        $user->generateAuthKey();
-//        $user->generateEmailVerificationToken();
-
-//        return $user->save() && $this->sendEmail($user);
         return $user->save();
     }
 

@@ -11,11 +11,11 @@ use app\models\Task;
  */
 class LandingController extends Controller
 {
-    private const DEFAULT_LAST_TASKS = 4;
+    private const DEFAULT_LAST_TASKS_COUNT = 4;
 
     public function actionIndex(): string
     {
-        $tasks = Task::getLastTasks(self::DEFAULT_LAST_TASKS, Status::STATUS_NEW)->all();
+        $tasks = Task::getLastTasks(self::DEFAULT_LAST_TASKS_COUNT, Status::STATUS_NEW)->all();
 
         return $this->renderPartial('index', ['tasks' => $tasks]);
     }

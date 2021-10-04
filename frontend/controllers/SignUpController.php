@@ -6,10 +6,6 @@ use app\models\City;
 use frontend\models\SignupForm;
 use yii\web\Controller;
 
-
-/**
- * Registration controller
- */
 class SignupController extends Controller
 {
     public function actionIndex()
@@ -25,7 +21,7 @@ class SignupController extends Controller
 
         return $this->render('index', [
             'city' => $city,
-            'signupForm' => $signUp
+            'signupForm' => $signUp,
         ]);
     }
 }
