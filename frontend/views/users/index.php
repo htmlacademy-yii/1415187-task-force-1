@@ -17,6 +17,8 @@ use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\widgets\LinkPager;
 
+$this->title = 'Пользователи';
+
 ?>
 
 <section class="user__search">

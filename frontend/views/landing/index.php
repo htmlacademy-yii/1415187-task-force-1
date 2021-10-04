@@ -10,9 +10,11 @@ use yii\helpers\Html;
 use frontend\helpers\MainAsset;
 use yii\helpers\Url;
 
+$this->title = 'TaskForce';
 MainAsset::register($this);
+$this->beginPage();
 
-$this->beginPage() ?>
+?>
     <!DOCTYPE html>
     <html lang="<?= Yii::$app->language ?>">
     <head>
