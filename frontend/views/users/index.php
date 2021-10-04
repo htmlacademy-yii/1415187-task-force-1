@@ -17,7 +17,7 @@ use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\widgets\LinkPager;
 
-$this->title = 'Пользователи';
+$this->title = 'Исполнители';
 
 ?>
 
