@@ -50,7 +50,7 @@ class SignupForm extends Model
 
             ['name', 'string', 'max' => self::MAX_STRING_LENGTH],
 
-            ['password', 'string', 'min' => \Yii::$app->params['user.passwordMinLength'], 'message' => 'Длина пароля от 8 символов до ' . self::MAX_PASSWORD_LENGTH . ' символов'],
+            ['password', 'string', 'min' => \Yii::$app->params['user.passwordMinLength'], 'message' => 'Длина пароля от 8 символов до ' . self::MAX_PASSWORD_LENGTH . ' символов'], // сообщение не выводится
             ['password', 'string', 'max' => self::MAX_PASSWORD_LENGTH, 'message' => 'Длина пароля от 8 символов до ' . self::MAX_PASSWORD_LENGTH . ' символов'],
         ];
     }

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @var $tasks Task
+ * @var $tasks     Task
  * @var $loginForm LoginForm
  */
 
@@ -248,54 +248,55 @@ $this->beginPage();
             </div>
         </div>
     </footer>
-    <section class="modal enter-form form-modal" id="enter-form">
+    <section class="enter-form form-modal" id="enter-form">
         <h2>Вход на сайт</h2>
-
-        <?php $form = ActiveForm::begin([
-            'id' => 'user-login-form',
-            'action' => ['/landing'],
-            'method' => 'post',
-            'enableAjaxValidation' => true
-        ]);
-
-        echo $form->field($loginForm, 'email', [
-            'options' => ['class' => ''],
-            'labelOptions' => [
-                'class' => 'form-modal-description form-control',
-                'style' => 'display:inline-block'
+        <?php $form = ActiveForm::begin(
+            [
+                'options'              => [
+                    'tag' => false,
+                ],
+                'enableAjaxValidation' => true,
+                'id'                   => 'loginForm',
+                'validateOnBlur'       => false,
+                'validateOnChange'     => false,
             ]
-        ])
-            ->textinput([
-                'class' => 'enter-form-email input input-middle',
-                'style' => 'width: 90%; margin-bottom:5px',
-            ])
-            ->error(['tag' => 'span', 'style' => 'display:inline-block; margin-bottom:12px']);
+        );
 
-        echo $form->field($loginForm, 'password', [
-            'options' => ['class' => ''],
-            'labelOptions' => [
-                'class' => 'form-modal-description form-control',
-                'style' => 'display:inline-block'
+        echo $form->field(
+            $loginForm,
+            'email',
+            [
+                'options'      => [
+                    'tag' => 'p',
+                ],
+                'labelOptions' => ['class' => 'form-modal-description']
             ]
+        )->textInput(
+            [
+                'autofocus' => true,
+                'class'     => 'enter-form-email input input-middle',
+                'type'      => 'email'
+            ]
+        );
 
-        ])
-            ->passwordInput([
-                'class' => 'enter-form-email input input-middle',
-                'style' => 'width: 90%; margin-bottom:10px; border-color: #e4e9f2',
-                'type' => 'password'
-            ])
-            ->error(['tag' => 'span', 'style' => 'display:inline-block; margin-bottom:12px']);
+        echo $form->field(
+            $loginForm,
+            'password',
+            [
+                'options'      => [
+                    'tag' => 'p',
+                ],
+                'labelOptions' => ['class' => 'form-modal-description'],
+            ]
+        )->passwordInput(['class' => 'enter-form-email input input-middle']);
+
+        echo Html::submitButton('Войти', ['class' => 'button']);
+
+        ActiveForm::end();
+
+        echo Html::button('Закрыть', ['class' => 'form-modal-close', 'id' => 'close-modal']);
+
         ?>
-
-
-        <div class="form-group">
-            <?= Html::submitButton('Войти',
-                ['class' => 'button', 'name' => 'login-button']) ?>
-        </div>
-
-        <?php ActiveForm::end(); ?>
-
-        <button class="form-modal-close" type="button">Закрыть</button>
     </section>
 </div>
 <?php $this->endBody() ?>
