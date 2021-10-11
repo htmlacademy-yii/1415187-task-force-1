@@ -257,12 +257,12 @@ $this->beginPage();
             'options' => ['data-pjax' => true]
         ]); ?>
         <p>
-            <?=Html::activeLabel($this->params['modelLogin'], 'email', ['class' => 'form-modal-description'])?>
-            <?=Html::activeTextInput($this->params['modelLogin'], 'email', ['class' => 'enter-form-email input input-middle', 'type' => 'email'])?>
+            <?=Html::activeLabel($loginForm, 'email', ['class' => 'form-modal-description'])?>
+            <?=Html::activeTextInput($loginForm, 'email', ['class' => 'enter-form-email input input-middle', 'type' => 'email'])?>
         </p>
         <p>
-            <?=Html::activeLabel($this->params['modelLogin'], 'password', ['class' => 'form-modal-description'])?>
-            <?=Html::activePasswordInput($this->params['modelLogin'], 'password', ['class' => 'enter-form-email input input-middle'])?>
+            <?=Html::activeLabel($loginForm, 'password', ['class' => 'form-modal-description'])?>
+            <?=Html::activePasswordInput($loginForm, 'password', ['class' => 'enter-form-email input input-middle'])?>
         </p>
         <?=Html::submitButton('Войти', ['class' => 'button'])?>
         <?php ActiveForm::end()?>

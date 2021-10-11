@@ -25,7 +25,7 @@ class LandingController extends SecurityController
         $loginForm = new LoginForm();
 
         if (Yii::$app->request->isPjax) {
-            if ($loginForm->load(Yii::$app->request->post()) && $model->login()) {
+            if ($loginForm->load(Yii::$app->request->post()) && $loginForm->login()) {
                 return $this->redirect(['tasks/index']);
             }
 
@@ -34,12 +34,9 @@ class LandingController extends SecurityController
             ]);
         }
 
-        // TODO fix password
-        // TODO add  tooShort and tooLong keys
-
         $tasks = Task::getLastTasks(self::DEFAULT_LAST_TASKS_COUNT, Status::STATUS_NEW)->all();
 
-        return $this->renderPartial('/index',
+        return $this->renderPartial('index',
             [
                 'tasks' => $tasks,
                 'loginForm' => $loginForm,
