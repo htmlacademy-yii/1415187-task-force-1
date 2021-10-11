@@ -15,7 +15,7 @@ class LoginForm extends Model
      */
     public $email;
     public $password;
-    private $user;
+    private $_user;
 
     public function attributeLabels()
     {
@@ -61,10 +61,10 @@ class LoginForm extends Model
 
     public function getUser()
     {
-        if ($this->user === null) {
-            $this->user = User::findOne(['email' => $this->email]);
+        if ($this->_user === null) {
+            $this->_user = User::findOne(['email' => $this->email]);
         }
 
-        return $this->user;
+        return $this->_user;
     }
 }

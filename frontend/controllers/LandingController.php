@@ -24,29 +24,22 @@ class LandingController extends SecurityController
     {
         $loginForm = new LoginForm();
 
-        if (Yii::$app->request->getIsPost()) {
-            $loginForm->load(Yii::$app->request->post());
-
-            if (Yii::$app->request->isAjax) {
-                Yii::$app->response->format = Response::FORMAT_JSON;
-
-                return ActiveForm::validate($loginForm);
+        if (Yii::$app->request->isPjax) {
+            if ($loginForm->load(Yii::$app->request->post()) && $model->login()) {
+                return $this->redirect(['tasks/index']);
             }
 
-            if ($loginForm->validate()) {
-
-                $user = $loginForm->getUser();
-                Yii::$app->user->login($user);
-
-                return $this->goBack();
-            }
+            return $this->renderPartial('loginForm', [
+                'loginForm' => $loginForm
+            ]);
         }
 
         // TODO fix password
+        // TODO add  tooShort and tooLong keys
 
         $tasks = Task::getLastTasks(self::DEFAULT_LAST_TASKS_COUNT, Status::STATUS_NEW)->all();
 
-        return $this->renderPartial('../login/index',
+        return $this->renderPartial('/index',
             [
                 'tasks' => $tasks,
                 'loginForm' => $loginForm,
