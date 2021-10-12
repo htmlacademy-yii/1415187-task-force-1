@@ -17,8 +17,6 @@ use yii\widgets\Menu;
 AppAsset::register($this);
 $this->beginPage();
 
-$user = Yii::$app->user->getIdentity();
-
 ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>">
@@ -134,20 +132,16 @@ $user = Yii::$app->user->getIdentity();
                     <a href="view.html" class="link-regular">«Помочь с курсовой»</a>
                 </p>
             </div>
-            <?php if (!empty($user)) { ?>
-                <div class="header__account">
-                    <a class="header__account-photo">
-                        <?php if (!empty($user->avatar)) { ?>
-                        <img src="/img/<?= $user->avatar ?>"
-                             width="43" height="44"
-                             alt="Аватар пользователя">
-                        <?php } ?>
-                    </a>
-                    <span class="header__account-name">
-                 <?= $user->name ?>
+            <div class="header__account">
+                <a class="header__account-photo">
+                    <img src="/img/user-photo.png"
+                         width="43" height="44"
+                         alt="Аватар пользователя">
+                </a>
+                <span class="header__account-name">
+                 Василий
              </span>
-                </div>
-            <?php } ?>
+            </div>
             <div class="account__pop-up">
                 <ul class="account__pop-up-list">
                     <li>
@@ -157,7 +151,7 @@ $user = Yii::$app->user->getIdentity();
                         <a href="account.html">Настройки</a>
                     </li>
                     <li>
-                        <a href="<?php echo Url::to(['landing/logout']); ?>">Выход</a>
+                        <a href="landing.html">Выход</a>
                     </li>
                 </ul>
             </div>
@@ -217,7 +211,7 @@ $user = Yii::$app->user->getIdentity();
                             от 500 рублей в час.</p>
                     </div>
                 </div>
-            <?php } ?>
+                <?php } ?>
             <div class="page-footer__copyright">
                 <a>
                     <img class="copyright-logo"
