@@ -7,7 +7,10 @@ use yii\web\Controller;
 
 abstract class SecurityController extends Controller
 {
-    public function behaviors()
+    protected const LANDING_CONTROLLER = '/landing';
+    protected const TASKS_CONTROLLER = '/tasks';
+
+    public function behaviors(): array
     {
         return [
             'access' => [
@@ -25,7 +28,7 @@ abstract class SecurityController extends Controller
                         'allow' => false,
                         'roles' => ['?'],
                         'denyCallback' => function ($rule, $action) {
-                            return $action->controller->redirect('/landing');
+                            return $action->controller->redirect(self::LANDING_CONTROLLER);
                         }
                     ],
                     [
@@ -39,7 +42,7 @@ abstract class SecurityController extends Controller
                         'allow' => false,
                         'roles' => ['@'],
                         'denyCallback' => function ($rule, $action) {
-                            return $action->controller->redirect('/tasks');
+                            return $action->controller->redirect(self::TASKS_CONTROLLER);
                         }
                     ],
                 ]

@@ -19,6 +19,8 @@ use yii\widgets\ActiveForm;
 class LandingController extends SecurityController
 {
     private const DEFAULT_LAST_TASKS_COUNT = 4;
+    private const LOGIN_PAGE_PATH = '../login/index';
+    private const SIGNUP_PAGE_PATH = '../signup/index';
 
     public function actionLogin(): Response|array|string
     {
@@ -44,7 +46,7 @@ class LandingController extends SecurityController
 
         $tasks = Task::getLastTasks(self::DEFAULT_LAST_TASKS_COUNT, Status::STATUS_NEW)->all();
 
-        return $this->renderPartial('../login/index',
+        return $this->renderPartial(self::LOGIN_PAGE_PATH,
             [
                 'tasks' => $tasks,
                 'loginForm' => $loginForm,
@@ -63,7 +65,7 @@ class LandingController extends SecurityController
 
         $city = City::getCities();
 
-        return $this->render('../signup/index', [
+        return $this->render(self::SIGNUP_PAGE_PATH, [
             'city' => $city,
             'signupForm' => $signUp,
         ]);
