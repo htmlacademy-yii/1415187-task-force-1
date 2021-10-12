@@ -12,7 +12,7 @@ class LoginForm extends Model
 {
     public $email;
     public $password;
-    private $_user;
+    private $user;
 
     public function attributeLabels(): array
     {
@@ -49,10 +49,10 @@ class LoginForm extends Model
 
     public function getUser(): ?User
     {
-        if ($this->_user === null) {
-            $this->_user = User::findOne(['email' => $this->email]);
+        if ($this->user === null) {
+            $this->user = User::findOne(['email' => $this->email]);
         }
 
-        return $this->_user;
+        return $this->user;
     }
 }

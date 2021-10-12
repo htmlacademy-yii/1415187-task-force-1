@@ -252,43 +252,35 @@ $this->beginPage();
         <h2>Вход на сайт</h2>
         <?php $form = ActiveForm::begin(
             [
-                'options'              => [
+                'options' => [
                     'tag' => false,
                 ],
+                'errorCssClass' => 'has-error',
+                'fieldConfig' => [
+                    'options' => ['tag' => 'p'],
+                    'inputOptions' => ['class' => 'enter-form-email input input-middle'],
+                    'errorOptions' => ['tag' => 'span'],
+                    'labelOptions' => ['class' => 'form-modal-description'],
+                ],
                 'enableAjaxValidation' => true,
-                'id'                   => 'loginForm',
-                'validateOnBlur'       => false,
-                'validateOnChange'     => false,
+                'id' => 'loginForm',
+                'validateOnSubmit' => true
             ]
         );
 
         echo $form->field(
             $loginForm,
-            'email',
-            [
-                'options'      => [
-                    'tag' => 'p',
-                ],
-                'labelOptions' => ['class' => 'form-modal-description']
-            ]
+            'email'
         )->textInput(
             [
-                'autofocus' => true,
-                'class'     => 'enter-form-email input input-middle',
-                'type'      => 'email'
+                'type' => 'email',
             ]
         );
 
         echo $form->field(
             $loginForm,
             'password',
-            [
-                'options'      => [
-                    'tag' => 'p',
-                ],
-                'labelOptions' => ['class' => 'form-modal-description'],
-            ]
-        )->passwordInput(['class' => 'enter-form-email input input-middle']);
+        )->passwordInput();
 
         echo Html::submitButton('Войти', ['class' => 'button']);
 
