@@ -10,14 +10,11 @@ use yii\base\Model;
  */
 class LoginForm extends Model
 {
-    /**
-     * {@inheritdoc}
-     */
     public $email;
     public $password;
     private $_user;
 
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'email' => 'Электронная почта',
@@ -25,15 +22,13 @@ class LoginForm extends Model
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
 
             [['email', 'password'], 'safe'],
-            [['email', 'password'], 'required'],
+            [['email'], 'required', 'message' => 'Email не может быть пустым'],
+            [['password'], 'required', 'message' => 'Пароль не может быть пустым'],
 
             ['email', 'trim'],
             ['email', 'email'],
@@ -42,13 +37,7 @@ class LoginForm extends Model
         ];
     }
 
-    /**
-     * Validates the password.
-     * This method serves as the inline validation for password.
-     *
-     * @param string $attribute the attribute currently being validated
-     */
-    public function validatePassword($attribute)
+    public function validatePassword($attribute): void
     {
         if (!$this->hasErrors()) {
             $user = $this->getUser();
@@ -56,10 +45,9 @@ class LoginForm extends Model
                 $this->addError($attribute, 'Неправильный email или пароль');
             }
         }
-
     }
 
-    public function getUser()
+    public function getUser(): ?User
     {
         if ($this->_user === null) {
             $this->_user = User::findOne(['email' => $this->email]);

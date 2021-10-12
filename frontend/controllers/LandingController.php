@@ -20,7 +20,7 @@ class LandingController extends SecurityController
 {
     private const DEFAULT_LAST_TASKS_COUNT = 4;
 
-    public function actionLogin()
+    public function actionLogin(): Response|array|string
     {
         $loginForm = new LoginForm();
 
@@ -43,7 +43,7 @@ class LandingController extends SecurityController
             ]);
     }
 
-    public function actionSignup()
+    public function actionSignup(): Response|string
     {
         $signUp = new SignupForm();
 
@@ -61,7 +61,7 @@ class LandingController extends SecurityController
         ]);
     }
 
-    public function actionLogout()
+    public function actionLogout(): Response
     {
         Yii::$app->user->logout();
 

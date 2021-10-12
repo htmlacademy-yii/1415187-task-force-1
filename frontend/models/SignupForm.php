@@ -20,7 +20,7 @@ class SignupForm extends Model
     private const MAX_STRING_LENGTH = 128;
     private const MAX_PASSWORD_LENGTH = 16;
 
-    public function attributeLabels()
+    public function attributeLabels(): array
     {
         return [
             'email' => 'Электронная почта',
@@ -30,10 +30,7 @@ class SignupForm extends Model
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
 
@@ -55,12 +52,7 @@ class SignupForm extends Model
         ];
     }
 
-    /**
-     * Signs user up.
-     *
-     * @return bool whether the creating new account was successful and email was sent
-     */
-    public function signup()
+    public function signup(): ?bool
     {
         if (!$this->validate()) {
             return null;
@@ -75,12 +67,7 @@ class SignupForm extends Model
         return $user->save();
     }
 
-    /**
-     * Sends confirmation email to user
-     * @param User $user user model to with email should be send
-     * @return bool whether the email was sent
-     */
-    protected function sendEmail($user)
+    protected function sendEmail($user): bool
     {
         return Yii::$app
             ->mailer
