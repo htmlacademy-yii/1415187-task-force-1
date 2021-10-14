@@ -31,7 +31,7 @@ class LoginForm extends Model
 
             ['email', 'trim'],
             ['email', 'email'],
-            ['password', 'string', 'min' => User::MAX_PASSWORD_LENGTH, 'tooShort' => 'Длина пароля должна быть от ' . User::MAX_PASSWORD_LENGTH . ' символов'],
+            ['password', 'string', 'min' => \Yii::$app->params['user.passwordMinLength'], 'tooShort' => 'Длина пароля должна быть от ' . User::MAX_PASSWORD_LENGTH . ' символов'],
             ['password', 'string', 'max' => User::MAX_STRING_LENGTH, 'tooLong' => 'Длина пароля должна быть до ' . User::MAX_STRING_LENGTH . ' символов'],
             ['password', 'validatePassword']
         ];
