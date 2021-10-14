@@ -17,9 +17,6 @@ class SignupForm extends Model
     public $city;
     public $password;
 
-    private const MAX_STRING_LENGTH = 128;
-    private const MAX_PASSWORD_LENGTH = 16;
-
     public function attributeLabels(): array
     {
         return [
@@ -42,13 +39,13 @@ class SignupForm extends Model
 
             ['email', 'trim'],
             ['email', 'email', 'message' => 'Введите валидный адрес электронной почты'],
-            ['email', 'string', 'max' => self::MAX_STRING_LENGTH],
+            ['email', 'string', 'max' => User::MAX_STRING_LENGTH],
             ['email', 'unique', 'targetClass' => '\app\models\User', 'message' => 'Пользователь с таким email уже существует'],
 
             ['name', 'string', 'max' => self::MAX_STRING_LENGTH],
 
-            ['password', 'string', 'min' => \Yii::$app->params['user.passwordMinLength'], 'tooShort' => 'Длина пароля от 8 символов до ' . self::MAX_PASSWORD_LENGTH . ' символов'],
-            ['password', 'string', 'max' => self::MAX_PASSWORD_LENGTH, 'tooLong' => 'Длина пароля от 8 символов до ' . self::MAX_PASSWORD_LENGTH . ' символов'],
+            ['password', 'string', 'min' => \Yii::$app->params['user.passwordMinLength'], 'tooShort' => 'Длина пароля от 8 символов до ' . User::MAX_PASSWORD_LENGTH . ' символов'],
+            ['password', 'string', 'max' => User::MAX_PASSWORD_LENGTH, 'tooLong' => 'Длина пароля от 8 символов до ' . User::MAX_PASSWORD_LENGTH . ' символов'],
         ];
     }
 

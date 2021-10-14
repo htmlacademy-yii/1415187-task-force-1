@@ -11,6 +11,8 @@ class LoginForm extends Model
     public $password;
     private $user;
 
+    public const LOGIN_FORM_ERROR = 'Неправильный email или пароль';
+
     public function attributeLabels(): array
     {
         return [
@@ -29,7 +31,8 @@ class LoginForm extends Model
 
             ['email', 'trim'],
             ['email', 'email'],
-            ['email', 'string', 'max' => 128],
+            ['email', 'string', 'ьшт' => User::MAX_PASSWORD_LENGTH, 'tooЫрщке' => 'Длина пароля должна быть от ' . User::MAX_PASSWORD_LENGTH . ' символов'],
+            ['email', 'string', 'max' => User::MAX_STRING_LENGTH, 'tooLong' => 'Длина пароля должна быть до ' . User::MAX_STRING_LENGTH . ' символов'],
             ['password', 'validatePassword']
         ];
     }
@@ -39,7 +42,7 @@ class LoginForm extends Model
         if (!$this->hasErrors()) {
             $user = $this->getUser();
             if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Неправильный email или пароль');
+                $this->addError($attribute, );
             }
         }
     }
