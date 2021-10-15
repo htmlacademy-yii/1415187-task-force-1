@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use app\models\City;
+use app\models\Responce;
 use app\models\Status;
 use frontend\models\LoginForm;
 use frontend\models\SignupForm;
@@ -22,7 +23,7 @@ class LandingController extends SecurityController
     private const LOGIN_PAGE_PATH = '../login/index';
     private const SIGNUP_PAGE_PATH = '../signup/index';
 
-    public function actionLogin(): Response|array|string
+    public function actionLogin(): array|string
     {
         $loginForm = new LoginForm();
 
@@ -40,7 +41,7 @@ class LandingController extends SecurityController
                 $user = $loginForm->getUser();
                 Yii::$app->user->login($user);
 
-                return $this->goBack();
+                $this->homeRedirect();
             }
         }
 
@@ -53,14 +54,14 @@ class LandingController extends SecurityController
             ]);
     }
 
-    public function actionSignup(): Response|string
+    public function actionSignup(): string
     {
         $signUp = new SignupForm();
 
         if ($signUp->load(\Yii::$app->request->post()) && $signUp->validate()) {
             $signUp->signup();
 
-            return $this->goHome();
+            $this->homeRedirect();
         }
 
         $city = City::getCities();
@@ -75,6 +76,11 @@ class LandingController extends SecurityController
     {
         Yii::$app->user->logout();
 
+        $this->homeRedirect();
+    }
+
+    public function homeRedirect(): Response
+    {
         return $this->goHome();
     }
 }
