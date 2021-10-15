@@ -72,7 +72,7 @@ class LandingController extends SecurityController
         ]);
     }
 
-    public function actionLogout(): Response
+    public function actionLogout(): void
     {
         Yii::$app->user->logout();
 
